@@ -823,5 +823,5 @@ def seed_all():
     seed_clubs()
     seed_armas()
     seed_admin()
-    seed_usuarios()
+    #seed_usuarios()
     seed_personaje_armas()
