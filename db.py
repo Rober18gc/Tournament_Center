@@ -1,5 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase, scoped_session
+import os
+
+# Creamos la carpeta database si no existe (necesario en producción)
+os.makedirs("database", exist_ok=True)
 
 engine = create_engine(
     'sqlite:///database/TorneoJuegos.db',
