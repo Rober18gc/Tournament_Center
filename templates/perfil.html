@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block content %}
+
+<div class="perfil-card" id="tarjetaPerfil">
+
+    <div class="perfil-header">
+        <div class="avatar">{{ usuario.nombre[0].upper() }}</div>
+        <h2 id="headerNombreCompleto">{{ usuario.nombre }} {{ usuario.apellidos }}</h2>
+        <div class="rol">{{ usuario.rol_obj.nombre_rol }}</div>
+    </div>
+
+    <div class="perfil-info">
+
+        <div class="info-item info-editable">
+            <span class="etiqueta-perfil">Nombre</span>
+            <div class="info-valor-fila">
+                <p class="valor-perfil">{{ usuario.nombre }}</p>
+                <button class="btn-perfil-lapiz" onclick="editarDatoPerfil(event, this)">✏️</button>
+            </div>
+        </div>
+
+        <div class="info-item info-editable">
+            <span class="etiqueta-perfil">Apellidos</span>
+            <div class="info-valor-fila">
+                <p class="valor-perfil">{{ usuario.apellidos }}</p>
+                <button class="btn-perfil-lapiz" onclick="editarDatoPerfil(event, this)">✏️</button>
+            </div>
+        </div>
+
+        <div class="info-item info-editable">
+            <span class="etiqueta-perfil">Nombre de usuario</span>
+            <div class="info-valor-fila">
+                <p class="valor-perfil">{{ usuario.nombre_usuario }}</p>
+                <button class="btn-perfil-lapiz" onclick="editarDatoPerfil(event, this)">✏️</button>
+            </div>
+        </div>
+
+        <div class="info-item info-editable">
+            <span class="etiqueta-perfil">Email</span>
+            <div class="info-valor-fila">
+                <p class="valor-perfil">{{ usuario.email }}</p>
+                <button class="btn-perfil-lapiz" onclick="editarDatoPerfil(event, this)">✏️</button>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <span class="etiqueta-perfil">Fecha de nacimiento</span>
+            <p class="valor-perfil">{{ usuario.fecha_nacimiento.strftime("%Y-%m-%d") }}</p>
+        </div>
+
+        <div class="info-item">
+            <span class="etiqueta-perfil">Fecha de registro</span>
+            <p class="valor-perfil">{{ usuario.fecha_registro.strftime("%Y-%m-%d") }}</p>
+        </div>
+
+        <div class="info-item" id="itemPassword" data-password="{{ usuario.password }}">
+            <span class="etiqueta-perfil">Contraseña</span>
+            <div class="info-valor-fila">
+                <p class="valor-perfil span-password-perfil">••••••••</p>
+                <button class="btn-perfil-ojo" onclick="toggleVerPasswordPerfil(event)">👁️</button>
+                <button class="btn-perfil-lapiz" onclick="toggleEditarPasswordPerfil(event, this)">✏️</button>
+            </div>
+            <div id="nuevaPasswordContenedor" class="nueva-password-contenedor oculto">
+                <input type="password"
+                       id="inputNuevaPassword"
+                       class="input-perfil-edicion"
+                       placeholder="Nueva contraseña (mín. 6 caracteres)">
+                <button class="btn-perfil-lapiz" onclick="confirmarNuevaPassword(event)">✅</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="perfil-stats">
+
+        <div class="perfil-stat-item">
+            <span>Juego favorito</span>
+            <p>{{ juego_favorito.nombre_juego if juego_favorito else "Sin participaciones" }}</p>
+        </div>
+
+        {% if elemento_mas_usado %}
+        <div class="perfil-stat-item">
+            <span>{{ etiqueta_elemento }}</span>
+            <p>{{ elemento_mas_usado }}</p>
+        </div>
+        {% endif %}
+
+        <div class="perfil-stat-item">
+            <span>Torneos participados</span>
+            <p class="perfil-stat-numero">{{ torneos_participados | length }}</p>
+            {% if torneos_participados %}
+            <ul class="perfil-lista-torneos">
+                {% for torneo in torneos_participados %}
+                <li onclick="window.location.href='/torneo/{{ torneo.id }}'">
+                    {{ torneo.nombre }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
+        <div class="perfil-stat-item">
+            <span>Torneos ganados</span>
+            <p class="perfil-stat-numero">{{ torneos_ganados | length }}</p>
+            {% if torneos_ganados %}
+            <ul class="perfil-lista-torneos perfil-lista-ganados">
+                {% for torneo in torneos_ganados %}
+                <li onclick="window.location.href='/torneo/{{ torneo.id }}'">
+                    {{ torneo.nombre }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
+        <div class="perfil-stat-item">
+            <span>Torneos creados activos</span>
+            <p class="perfil-stat-numero">{{ torneos_creados_activos | length }}</p>
+            {% if torneos_creados_activos %}
+            <ul class="perfil-lista-torneos">
+                {% for torneo in torneos_creados_activos %}
+                <li onclick="window.location.href='/torneo/{{ torneo.id }}'">
+                    {{ torneo.nombre }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
+        <div class="perfil-stat-item">
+            <span>Torneos creados finalizados</span>
+            <p class="perfil-stat-numero">{{ torneos_creados_finalizados | length }}</p>
+            {% if torneos_creados_finalizados %}
+            <ul class="perfil-lista-torneos perfil-lista-ganados">
+                {% for torneo in torneos_creados_finalizados %}
+                <li onclick="window.location.href='/torneo/{{ torneo.id }}'">
+                    {{ torneo.nombre }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div class="perfil-botones">
+        <button class="btn-logout" onclick="window.location.href='/logout'">Cerrar sesión</button>
+        <button class="btn-aceptar-cambios-perfil" id="btnAceptarCambiosPerfil"
+                onclick="abrirModalConfirmarCambiosPerfil()" disabled>Aceptar cambios</button>
+        <button class="btn-borrar-cuenta" onclick="abrirModalBorrarCuenta()">Borrar cuenta</button>
+    </div>
+
+</div>
+
+<!-- MODAL CONFIRMAR CAMBIOS DE PERFIL -->
+<div id="modalConfirmarCambiosPerfil" class="modal-login oculto">
+    <div class="modal-login-contenido">
+        <h3>¿Guardar cambios?</h3>
+        <p>Vas a modificar tu perfil. Los cambios se aplicarán de inmediato.</p>
+        <div id="mensajeErrorPerfil" class="error-borrar-cuenta"></div>
+        <div class="modal-login-botones">
+            <button class="btn-register-modal" onclick="confirmarCambiosPerfil()">Aceptar</button>
+            <button class="btn-cerrar-modal" onclick="cerrarModalConfirmarCambiosPerfil()">Rechazar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMACIÓN BORRAR CUENTA -->
+<div id="modalBorrarCuenta" class="modal-login oculto">
+    <div class="modal-login-contenido">
+        <h3>¿Borrar tu cuenta?</h3>
+        <p>
+            Esta acción es irreversible. Si tienes partidas pendientes, se darán por ganadas a tu rival con un 3-0.
+            Los torneos que hayas creado quedarán activos.
+        </p>
+        <div id="mensajeErrorBorrar" class="error-borrar-cuenta"></div>
+        <div class="modal-login-botones">
+            <button class="btn-register-modal btn-confirmar-borrar" onclick="confirmarBorrarCuenta()">
+                Sí, borrar mi cuenta
+            </button>
+            <button class="btn-cerrar-modal" onclick="cerrarModalBorrarCuenta()">
+                Cancelar
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

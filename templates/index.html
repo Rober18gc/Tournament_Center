@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+{% if rol_usuario == "Administrador" %}
+
+    <!-- PANEL ADMINISTRADOR -->
+    <div class="inicio">
+        <h1 class="titulo-panel-admin">Panel de Administración</h1>
+        <div class="grid-juegos">
+
+            <div class="juego" onclick="window.location.href='/admin/usuarios/zona'">
+                <img src="{{ url_for('static', filename='imagenes/punos.jpg') }}" alt="Gestión Usuarios/Equipos">
+                <div class="overlay">Gestión Usuarios/Equipos</div>
+            </div>
+
+            <div class="juego" onclick="window.location.href='/admin/juegos'">
+                <img src="{{ url_for('static', filename='imagenes/p5.png') }}" alt="Gestión de Juegos">
+                <div class="overlay">Gestión de Juegos</div>
+            </div>
+
+            <div class="juego" onclick="window.location.href='/admin/torneos'">
+                <img src="{{ url_for('static', filename='imagenes/Platino.png') }}" alt="Gestión de Torneos">
+                <div class="overlay">Gestión de Torneos</div>
+            </div>
+
+        </div>
+    </div>
+
+{% else %}
+
+            <!-- SECCIÓN PRINCIPAL -->
+    <div id="inicio" class="inicio">
+        <div class="buscador-container">
+            <input type="text" id="buscador" placeholder="Buscar juego..." onkeyup="buscarJuego()">
+        </div>
+
+        <div class="grid-juegos" id="gridJuegos">
+
+            {% for juego in juegos %}
+            <div class="juego"
+                 data-genero="{{ juego.genero_obj.nombre_genero | lower }}"
+                 data-nombre="{{ juego.nombre_juego | lower }}">
+                <a href="{{ url_for('plantilla_juego', id_juego=juego.id_juego) }}">
+                    <img src="{{ url_for('static', filename='imagenes/portadas/' ~ (juego.portada or 'Logo.png')) }}">
+                    <div class="overlay">{{ juego.nombre_juego }}</div>
+                </a>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+{% endif %}
+
+{% endblock %}

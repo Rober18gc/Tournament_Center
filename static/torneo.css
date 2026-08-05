@@ -1,0 +1,1255 @@
+/* ========================= */
+/* MODAL NUEVO ORGANIZADOR  */
+/* ========================= */
+
+.modal-organizador-info {
+    color: #aaa;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+.modal-organizador-botones {
+    margin-top: 20px;
+}
+
+/* ========================= */
+/* LAYOUT GENERAL */
+/* ========================= */
+
+.pagina-torneo {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr 1.1fr;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ========================= */
+/* CARDS */
+/* ========================= */
+
+.card {
+    background: linear-gradient(145deg, #1b1b1b, #151515);
+    border: 1px solid rgba(26, 115, 232, 0.15);
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    border-radius: 14px;
+    position: relative;
+    overflow: visible;
+    transition: 0.25s ease;
+}
+
+
+.scroll-box::-webkit-scrollbar {
+    width: 8px;
+    background: #000;
+}
+
+.scroll-box::-webkit-scrollbar-track {
+    background: #000;
+}
+
+.scroll-box::-webkit-scrollbar-thumb {
+    background: #1e90ff;
+    border-radius: 10px;
+    border: 2px solid #000;
+}
+
+.scroll-box::-webkit-scrollbar-thumb:hover {
+    background: #4aa3ff;
+}
+
+/* Firefox */
+.scroll-box {
+    scrollbar-width: thin;
+    scrollbar-color: #1e90ff #000;
+
+}
+
+.scroll-box {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 8px;
+    position: relative;
+    padding-bottom: 15px;
+    mask-image: linear-gradient(to bottom, black 84%, transparent 100%);
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at top,
+        rgba(26, 115, 232, 0.12),
+        transparent 60%
+    );
+    pointer-events: none;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    transition: 0.25s ease;
+    box-shadow: 0 0 25px rgba(26, 115, 232, 0.15);
+}
+
+.card h2 {
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #1a73e8;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+/* ========================= */
+/* COLUMNA CENTRO (AJUSTE SUAVE FINAL) */
+/* ========================= */
+
+.columna.centro {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 14px;          /* 🔥 un pelín más aire */
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* 🔥 equilibrio perfecto */
+.columna.centro .card {
+    padding: 23px;
+    min-height: 115px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* ========================= */
+/* PERFIL */
+/* ========================= */
+
+.perfil-mini {
+    display: flex;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    line-height: 1.4;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+}
+
+.perfil-mini h3,
+.perfil-mini p {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.9;
+    text-align: center;
+}
+
+.perfil-mini .nombre {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.stat {
+    flex: 1;
+    background: linear-gradient(145deg, #1a1a1a, #151515);
+    border: 1px solid rgba(26, 115, 232, 0.15);
+    border-radius: 10px;
+    padding: 8px 6px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    transition: all 0.2s ease;
+}
+
+.stat:hover {
+    transform: translateY(-2px);
+    border-color: rgba(26, 115, 232, 0.4);
+    box-shadow: 0 0 10px rgba(26, 115, 232, 0.15);
+}
+
+.stat .label {
+    font-size: 10px;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat .value {
+    font-size: 16px;
+    font-weight: bold;
+    color: #1a73e8;
+    margin-top: 2px;
+}
+
+
+.columna.centro h2 {
+    text-align: center;
+    margin-bottom: 9px;
+    font-size: 16px;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+
+    background: radial-gradient(circle, #1a73e8, #0d47a1);
+    box-shadow: 0 0 15px rgba(26, 115, 232, 0.5);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 26px;
+    font-weight: bold;
+    color: white;
+
+    border: 2px solid rgba(255,255,255,0.08);
+}
+
+
+/* ========================= */
+/* RESTO SIN CAMBIOS */
+/* ========================= */
+
+.lista-encuentros {
+    max-height: 220px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.encuentro-card {
+    background: #2a2a2a;
+    padding: 7px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.jugadores {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-resultado {
+    background: #1a73e8;
+    border: none;
+    padding: 4px 8px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.btn-conflicto {
+    background: #e53935;
+}
+
+.btn-conflicto:hover {
+    background: #c62828;
+}
+
+.timer-espera {
+    font-size: 11px;
+    color: #ffd54f;
+    font-weight: bold;
+    padding: 2px 6px;
+    background: rgba(255, 213, 79, 0.1);
+    border: 1px solid rgba(255, 213, 79, 0.3);
+    border-radius: 4px;
+}
+
+/* ========================= */
+/* CLASIFICACIÓN */
+/* ========================= */
+
+.tabla-ranking-wrapper {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.tabla-ranking {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.tabla-ranking th,
+.tabla-ranking td {
+    padding: 5px;
+    text-align: center;
+    border-bottom: 1px solid #444;
+}
+
+.tabla-ranking th {
+    top: 0;
+    background: #1e1e1e;
+}
+
+/* ========================= */
+/* PARTICIPANTES */
+/* ========================= */
+
+.usuarios-lista {
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* ========================= */
+/* PARTICIPANTES - HOVER PRO */
+/* ========================= */
+
+.usuario-card {
+    padding: 6px;
+    background: #2a2a2a;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.2s ease;
+}
+
+/* hover igual que grupos */
+.usuario-card:hover {
+    background: #1a73e8;
+    transform: scale(1.03);
+    color: white;
+}
+
+/* efecto suave en la card contenedora */
+.card:has(.usuario-card:hover) {
+    box-shadow: 0 0 12px rgba(26, 115, 232, 0.15);
+}
+
+.usuario-card.seleccionado {
+    background: #1a73e8;
+}
+
+/* ========================= */
+/* SCROLL MODERNO */
+/* ========================= */
+
+.lista-encuentros,
+.usuarios-lista,
+.tabla-ranking-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: #1a73e8 transparent;
+}
+
+.lista-encuentros::-webkit-scrollbar,
+.usuarios-lista::-webkit-scrollbar,
+.tabla-ranking-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.lista-encuentros::-webkit-scrollbar-thumb,
+.usuarios-lista::-webkit-scrollbar-thumb,
+.tabla-ranking-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(#1a73e8, #0d47a1);
+    border-radius: 10px;
+}
+
+
+
+/* ========================= */
+/* GRUPOS */
+/* ========================= */
+
+#gruposTorneo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 200px;
+}
+
+#listaParticipantes {
+    max-height: 200px;
+}
+
+#clasificacionGrupos {
+    max-height: 220px;
+}
+
+/* tarjeta de cada grupo */
+.grupo-card {
+    background: #2a2a2a;
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.2s ease;
+}
+
+/* efecto hover suave */
+.grupo-card:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
+
+/* título grupo (A, B, C...) */
+.grupo-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #1a73e8;
+    text-align: center;
+}
+
+/* lista de jugadores */
+.grupo-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* cada jugador */
+.grupo-card li {
+    background: #1e1e1e;
+    padding: 6px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 11px;
+}
+
+/* último sin margen */
+.grupo-card li:last-child {
+    margin-bottom: 0;
+}
+
+/* ========================= */
+/* GRUPOS - HOVER INTERACTIVO */
+/* ========================= */
+
+.grupo-card li {
+    background: #1e1e1e;
+    padding: 6px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 11px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+/* 🔥 HOVER PRINCIPAL */
+.grupo-card li:hover {
+    background: #1a73e8;
+    transform: scale(1.03);
+    color: white;
+}
+
+/* 🔥 EFECTO “ILUMINAR GRUPO ENTERO” */
+.grupo-card:hover {
+    box-shadow: 0 0 12px rgba(26, 115, 232, 0.25);
+}
+
+.rival-container {
+    display: none;
+    background: #1e1e1e;
+    border-radius: 10px;
+    padding: 15px;
+    color: white;
+
+    flex-direction: column;
+    gap: 8px;
+
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.25s ease;
+}
+
+.rival-container.activo {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.jugable {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 6px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.loadout-item {
+    opacity: 0.9;
+}
+
+.loadout-item .text {
+    display: inline-block;
+}
+
+/* MODAL */
+/* ========================= */
+/* MODAL BASE */
+/* ========================= */
+
+.modal-resultado {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* CONTENEDOR */
+.modal-contenido {
+    background: #1b1b1b;
+    padding: 22px;
+    border-radius: 14px;
+    width: 420px;
+    max-width: 92%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    box-shadow: 0 0 25px rgba(0,0,0,0.7);
+}
+
+/* TÍTULO */
+.modal-contenido h2 {
+    margin: 0;
+    text-align: center;
+    color: #1a73e8;
+    font-size: 16px;
+}
+
+/* ========================= */
+/* DUEL0 (TU VS RIVAL) */
+/* ========================= */
+
+.resultado-duelo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+
+    transform: translateX(-6px);
+}
+
+/* CAJAS */
+.resultado-box {
+    flex: 1;
+    background: #242424;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+
+    overflow: hidden;
+}
+
+/* TITULO */
+.resultado-box h3 {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    color: #1a73e8;
+}
+
+/* INPUTS PEQUEÑOS Y CONTROLADOS */
+.resultado-box input {
+    width: 100%;
+    max-width: 60px;   /* 👈 evita desborde */
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+
+    text-align: center;
+    font-size: 14px;
+
+    background: #ffffff;
+    color: #111;
+    outline: none;
+
+    margin: 0 auto;
+    display: block;
+}
+
+.resultado-box input:focus {
+    box-shadow: 0 0 8px rgba(26, 115, 232, 0.4);
+}
+
+/* VS */
+.vs-box {
+    font-size: 16px;
+    font-weight: bold;
+    color: #e53935;
+    padding: 0 6px;
+    transform: translateY(4px);
+}
+
+/* ========================= */
+/* CAPTURA */
+/* ========================= */
+
+.upload-captura {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #ccc;
+    margin-top: 14px;   /* 👈 más separación del duelo */
+    margin-bottom: 14px;
+}
+
+.upload-captura input[type="file"] {
+    background: #242424;
+    border: 1px dashed #444;
+    border-radius: 8px;
+    padding: 10px;
+    color: #aaa;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+/* hover bonito */
+.upload-captura input[type="file"]:hover {
+    border-color: #1a73e8;
+    background: #2a2a2a;
+    color: white;
+}
+
+.upload-captura input[type="file"] {
+    background: #242424;
+    border: 1px dashed #444;
+    border-radius: 8px;
+    padding: 10px;
+    color: #aaa;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+/* hover bonito */
+.upload-captura input[type="file"]:hover {
+    border-color: #1a73e8;
+    background: #2a2a2a;
+    color: white;
+}
+
+/* ========================= */
+/* BOTONES */
+/* ========================= */
+
+.botones-modal {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px; /* 👈 baja botones */
+}
+
+.botones-modal button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.botones-modal button:first-child {
+    background: #4CAF50;
+    color: white;
+}
+
+.botones-modal button:last-child {
+    background: #ff4d4d;
+    color: white;
+}
+
+/* OCULTAR */
+.oculto {
+    display: none;
+}
+
+/* ========================= */
+/* LISTA MIEMBROS EQUIPO     */
+/* ========================= */
+
+.lista-miembros-torneo {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0;
+    max-height: 40px;
+    overflow-y: auto;
+    width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: #1a73e8 transparent;
+}
+
+.lista-miembros-torneo::-webkit-scrollbar {
+    width: 4px;
+}
+
+.lista-miembros-torneo::-webkit-scrollbar-thumb {
+    background: #1a73e8;
+    border-radius: 6px;
+}
+
+.lista-miembros-torneo li {
+    font-size: 11px;
+    color: #bbb;
+    padding: 3px 6px;
+    border-radius: 4px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lista-miembros-torneo li:hover {
+    background: rgba(26, 115, 232, 0.12);
+    color: white;
+}
+
+/* ========================================= */
+/* 🔥 BOTÓN REVISAR CONFLICTO */
+/* ========================================= */
+
+
+
+/* ========================================= */
+/* 🔥 MODAL REVISIÓN CONFLICTOS */
+/* ========================================= */
+
+.modal-revision {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+/* CONTENEDOR */
+
+.modal-revision .modal-contenido {
+    width: 650px;
+    max-width: 95%;
+    background:
+        linear-gradient(
+            145deg,
+            #1b1b1b,
+            #151515
+        );
+    border: 1px solid rgba(26,115,232,0.18);
+    box-shadow:
+        0 0 40px rgba(0,0,0,0.7),
+        0 0 20px rgba(26,115,232,0.08);
+    border-radius: 18px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* glow */
+
+.modal-revision .modal-contenido::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(26,115,232,0.12),
+            transparent 60%
+        );
+    pointer-events: none;
+}
+
+/* TITULO */
+
+.modal-revision h2 {
+    text-align: center;
+    margin: 0;
+    color: #1a73e8;
+    font-size: 18px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* ========================================= */
+/* CONTENIDO CONFLICTO */
+/* ========================================= */
+
+/* ========================================= */
+/* 🔥 DUELO CONFLICTO */
+/* ========================================= */
+
+#contenidoConflicto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 10px;
+}
+
+/* jugador */
+
+.conflicto-jugador {
+    flex: 1;
+    background:
+        linear-gradient(
+            145deg,
+            #232323,
+            #1b1b1b
+        );
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.22s ease;
+}
+
+.conflicto-jugador:hover {
+    transform: translateY(-3px);
+    border-color: rgba(26,115,232,0.35);
+    box-shadow:
+        0 0 18px rgba(26,115,232,0.15);
+}
+
+/* glow */
+
+.conflicto-jugador::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(26,115,232,0.08),
+            transparent 70%
+        );
+    pointer-events: none;
+}
+
+/* usuario */
+
+.conflicto-jugador h3 {
+    margin: 0 0 14px 0;
+    color: #1a73e8;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+}
+
+/* resultados */
+
+.conflicto-jugador p {
+    margin: 8px 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.5;
+}
+
+/* captura */
+
+.conflicto-jugador a {
+    display: inline-block;
+    margin-top: 12px;
+    background: rgba(26,115,232,0.12);
+    border: 1px solid rgba(26,115,232,0.22);
+    color: #6fb1ff;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.conflicto-jugador a:hover {
+    background: rgba(26,115,232,0.22);
+    transform: translateY(-1px);
+    color: white;
+}
+
+.resultado-final-admin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+    padding: 10px;
+}
+
+/* INPUT */
+.resultado-final-admin input {
+    width: 160px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(26, 115, 232, 0.25);
+    background: #1e1e1e;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    font-size: 13px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+/* HOVER / FOCUS */
+.resultado-final-admin input:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 10px rgba(26, 115, 232, 0.35);
+    transform: scale(1.03);
+}
+
+/* PLACEHOLDER */
+.resultado-final-admin input::placeholder {
+    color: rgba(255,255,255,0.4);
+    font-weight: normal;
+}
+
+.grupo-clasificacion {
+    margin-bottom: 18px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #1e1e1e;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+.grupo-clasificacion h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    margin: 4px 0 8px 0;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #1e90ff;
+}
+
+
+.tabla-ranking {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    text-align: center;
+}
+
+.tabla-ranking thead th {
+    top: 0;
+    z-index: 20;
+    background: #151515;
+    color: #1e90ff;
+}
+
+.tabla-ranking thead th {
+    top: 0;
+    z-index: 20;
+    background: #151515;
+}
+
+.tabla-ranking td {
+    padding: 6px 8px;
+    font-size: 12px;
+    color: #ddd;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.tabla-ranking tr:hover {
+    background: rgba(26,115,232,0.15);
+}
+
+.draw {
+    color: #ffd54f;
+    font-weight: bold;
+}
+
+/* =========================
+   CONTENEDOR PRINCIPAL
+========================= */
+
+#bracket {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 20px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #1e90ff #000;
+}
+
+#bracket::-webkit-scrollbar {
+    height: 8px;
+    background: #000;
+}
+
+#bracket::-webkit-scrollbar-track {
+    background: #000;
+}
+
+#bracket::-webkit-scrollbar-thumb {
+    background: #1e90ff;
+    border-radius: 10px;
+    border: 2px solid #000;
+}
+
+#bracket::-webkit-scrollbar-thumb:hover {
+    background: #4aa3ff;
+}
+
+/* bracket horizontal: extremos → centro */
+.bracket-horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    min-width: max-content;
+}
+
+.bracket-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.bracket-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 130px;
+}
+
+/* ── líneas conectoras lado izquierdo ── */
+.bracket-col-left .bracket-slot {
+    position: relative;
+}
+
+/* línea horizontal derecha */
+.bracket-col-left .bracket-slot::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 1px);
+    left: 100%;
+    width: 8px;
+    height: 2px;
+    background: #555;
+}
+
+/* vertical hacia abajo (1º de cada pareja) */
+.bracket-col-left .bracket-slot:nth-child(odd):not(:only-child)::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 7px);
+    width: 2px;
+    height: 50%;
+    background: #555;
+}
+
+/* vertical hacia arriba (2º de cada pareja) */
+.bracket-col-left .bracket-slot:nth-child(even)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(100% + 7px);
+    width: 2px;
+    height: 50%;
+    background: #555;
+}
+
+/* ── líneas conectoras lado derecho ── */
+.bracket-col-right .bracket-slot {
+    position: relative;
+}
+
+/* línea horizontal izquierda */
+.bracket-col-right .bracket-slot::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 1px);
+    right: 100%;
+    width: 8px;
+    height: 2px;
+    background: #555;
+}
+
+/* vertical hacia abajo (1º de cada pareja) */
+.bracket-col-right .bracket-slot:nth-child(odd):not(:only-child)::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 7px);
+    width: 2px;
+    height: 50%;
+    background: #555;
+}
+
+/* vertical hacia arriba (2º de cada pareja) */
+.bracket-col-right .bracket-slot:nth-child(even)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: calc(100% + 7px);
+    width: 2px;
+    height: 50%;
+    background: #555;
+}
+
+/* =========================
+   MATCH CARD
+========================= */
+
+.match-card {
+    width: 120px;
+    background: linear-gradient(145deg, #232323, #1b1b1b);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(0,0,0,0.4);
+    transition: 0.2s ease;
+    margin-bottom: 12px;
+}
+
+.match-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(26,115,232,0.4);
+}
+
+/* compacto */
+.match-card.compact {
+    width: 120px;
+}
+
+/* jugadores */
+.player-row {
+    padding: 10px;
+    text-align: center;
+    font-size: 13px;
+    color: #ddd;
+}
+
+.player-row:first-child {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* VS */
+.vs-separator {
+    text-align: center;
+    font-size: 10px;
+    color: #1a73e8;
+    padding: 5px;
+    background: rgba(255,255,255,0.02);
+}
+
+/* FINAL */
+.match-card.final {
+    border: 2px solid #1a73e8;
+    transform: scale(1.05);
+}
+
+/* =========================
+   VACÍOS
+========================= */
+
+.player-row:empty {
+    background: rgba(255,255,255,0.03);
+}
+
+.card-bracket {
+    margin-top: 25px;
+}
+
+/* =========================
+   MARCADOR INLINE BRACKET
+========================= */
+
+.score-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 5px 8px;
+    background: rgba(255,255,255,0.03);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.score-num {
+    font-size: 17px;
+    font-weight: bold;
+    min-width: 22px;
+    text-align: center;
+    line-height: 1;
+}
+
+.score-win {
+    color: #4caf50;
+    text-shadow: 0 0 8px rgba(76, 175, 80, 0.55);
+}
+
+.score-lose {
+    color: #e53935;
+    text-shadow: 0 0 6px rgba(229, 57, 53, 0.4);
+}
+
+.score-draw {
+    color: #ffd54f;
+}
+
+.vs-inline {
+    font-size: 9px;
+    font-weight: bold;
+    color: #1a73e8;
+    letter-spacing: 1px;
+}
+
+/* partida finalizada: borde sutil verde */
+.match-card.finished {
+    border-color: rgba(76, 175, 80, 0.3);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.1);
+}
+
+/* ========================= */
+/* RESPONSIVO                */
+/* ========================= */
+
+@media screen and (max-width: 900px) {
+    .pagina-torneo {
+        display: flex;
+        flex-direction: column;
+        padding: 8px;
+    }
+
+    .columna.centro {
+        width: 100%;
+    }
+
+    #bracket {
+        padding: 20px 10px;
+        overflow-x: auto;
+    }
+
+    .encuentro-card {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+}

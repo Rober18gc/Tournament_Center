@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Equipos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='administrador.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="panel-admin">
+
+    <h1 class="titulo-panel">Gestión de Equipos</h1>
+
+    <div class="controles-lista">
+        <input type="text"
+               class="buscador-usuarios"
+               placeholder="Buscar equipo..."
+               oninput="filtrarEquiposAdmin(this.value)">
+
+        <select class="selector-orden" onchange="ordenarEquiposAdmin(this.value)">
+            <option value="">Ordenar por...</option>
+            <option value="alfabetico">Alfabético (A-Z)</option>
+            <option value="miembros">Miembros (mayor a menor)</option>
+        </select>
+    </div>
+
+    <div class="lista-usuarios" id="listaEquiposAdmin">
+
+        {% for equipo in equipos %}
+        <div class="fila-usuario"
+             data-id="{{ equipo.id_equipo }}"
+             data-nombre="{{ equipo.nombre }}"
+             data-miembros="{{ equipo.miembros | length }}">
+
+            <div class="cabecera-fila" onclick="toggleDesplegable(this)">
+                <span class="nombre-fila">{{ equipo.nombre }}</span>
+                <span class="contador-torneos-badge">{{ equipo.miembros | length }} / {{ equipo.max_miembros }} miembros</span>
+                <div class="botones-fila">
+                    <button class="btn-lapiz"
+                            onclick="editarTodoEquipoAdmin(event, this)"
+                            title="Editar todo">✏️</button>
+                    <button class="btn-papelera"
+                            onclick="abrirModalBorrarEquipo(event, {{ equipo.id_equipo }}, '{{ equipo.nombre }}')"
+                            title="Borrar equipo">🗑️</button>
+                </div>
+            </div>
+
+            <div class="panel-desplegable oculto">
+
+                <div class="dato-fila">
+                    <span class="etiqueta-dato">Nombre</span>
+                    <span class="valor-dato">{{ equipo.nombre }}</span>
+                    <button class="btn-lapiz-dato" onclick="editarDatoEquipoAdmin(event, this)">✏️</button>
+                </div>
+
+                <div class="dato-fila">
+                    <span class="etiqueta-dato">Descripción</span>
+                    <span class="valor-dato">{{ equipo.descripcion or '' }}</span>
+                    <button class="btn-lapiz-dato" onclick="editarDatoEquipoAdmin(event, this)">✏️</button>
+                </div>
+
+                <div class="dato-fila">
+                    <span class="etiqueta-dato">Máx. miembros</span>
+                    <span class="valor-dato">{{ equipo.max_miembros }}</span>
+                    <button class="btn-lapiz-dato" onclick="editarDatoEquipoAdmin(event, this)">✏️</button>
+                </div>
+
+                <div class="botones-desplegable">
+                    <button class="btn-aceptar-cambios"
+                            id="btnAceptarEquipo-{{ equipo.id_equipo }}"
+                            onclick="aceptarCambiosEquipoAdmin({{ equipo.id_equipo }})"
+                            disabled>Aceptar</button>
+                    <button class="btn-restablecer-cambios"
+                            onclick="restablecerCambiosEquipoAdmin({{ equipo.id_equipo }})">Restablecer</button>
+                </div>
+
+                <div class="separador-solo-lectura"></div>
+
+                <div class="seccion-participantes-equipo">
+                    <span class="etiqueta-dato">Miembros</span>
+                    <ul class="lista-participantes-equipo" id="miembros-equipo-{{ equipo.id_equipo }}">
+                        {% for miembro in equipo.miembros %}
+                        <li class="elemento-participante"
+                            data-id-usuario="{{ miembro.usuario_obj.id_usuario }}"
+                            data-id-equipo="{{ equipo.id_equipo }}"
+                            data-es-capitan="{{ 'true' if miembro.rol == 'capitan' else 'false' }}">
+                            <span class="nombre-participante">
+                                {{ miembro.usuario_obj.nombre_usuario }}
+                                {% if miembro.rol == 'capitan' %}
+                                <span class="rol-participante rol-capitan">Capitán</span>
+                                {% endif %}
+                            </span>
+                            <div class="acciones-miembro">
+                                {% if miembro.rol == 'capitan' %}
+                                <button class="btn-quitar-capitan"
+                                        onclick="toggleCapitanEquipoAdmin({{ equipo.id_equipo }}, {{ miembro.usuario_obj.id_usuario }}, this)">
+                                    Quitar capitán
+                                </button>
+                                {% else %}
+                                <button class="btn-hacer-capitan"
+                                        onclick="toggleCapitanEquipoAdmin({{ equipo.id_equipo }}, {{ miembro.usuario_obj.id_usuario }}, this)">
+                                    Hacer capitán
+                                </button>
+                                {% endif %}
+                                <button class="btn-expulsar-miembro"
+                                        onclick="expulsarMiembroEquipoAdmin({{ equipo.id_equipo }}, {{ miembro.usuario_obj.id_usuario }}, this)">
+                                    🗑️
+                                </button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="controles-paginacion oculto" id="paginacion-listaEquiposAdmin">
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaEquiposAdmin', '.fila-usuario', -1)">←</button>
+        <span class="pagina-actual-texto">1 / 1</span>
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaEquiposAdmin', '.fila-usuario', 1)">→</button>
+    </div>
+
+</div>
+
+<!-- MODAL BORRAR EQUIPO -->
+<div id="modalBorrarEquipoAdmin" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>¿Borrar equipo?</h3>
+        <p>Vas a borrar <strong id="nombreEquipoBorrar"></strong>. Se eliminarán todos sus miembros. Esta acción es irreversible.</p>
+        <div class="modal-borrar-botones">
+            <button class="btn-confirmar-borrar-admin" onclick="confirmarBorrarEquipoAdmin()">Sí, borrar</button>
+            <button class="btn-cancelar-borrar" onclick="cerrarModalBorrarEquipoAdmin()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ERROR EQUIPO -->
+<div id="modalErrorEquipoAdmin" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3 style="color:#e53935;">Error</h3>
+        <p id="mensajeErrorEquipoAdmin"></p>
+        <div class="modal-borrar-botones">
+            <button class="btn-cancelar-borrar" onclick="document.getElementById('modalErrorEquipoAdmin').classList.add('oculto')">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

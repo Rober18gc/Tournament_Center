@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Equipos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='equipos.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina-equipos">
+
+    <div class="equipos-cabecera">
+        <h1>Equipos</h1>
+        <a href="/equipos/crear">
+            <button class="btn-crear-equipo">+ Crear equipo</button>
+        </a>
+    </div>
+
+    <div class="controles-lista">
+        <input type="text"
+               class="buscador-equipos"
+               placeholder="Buscar equipo..."
+               oninput="filtrarEquipos(this.value)">
+
+        <select class="selector-orden-equipos" onchange="ordenarEquipos(this.value)">
+            <option value="">Ordenar por...</option>
+            <option value="alfabetico">Alfabético (A-Z)</option>
+            <option value="mas-miembros">Más miembros</option>
+            <option value="menos-miembros">Menos miembros</option>
+            <option value="mas-hueco">Más hueco disponible</option>
+        </select>
+    </div>
+
+    {% if equipos %}
+    <div class="grid-equipos" id="listaEquipos">
+
+        {% for equipo in equipos %}
+        <div class="equipo-card" id="card-equipo-{{ equipo.id_equipo }}"
+             data-nombre="{{ equipo.nombre | lower }}"
+             data-miembros="{{ equipo.miembros_count }}"
+             data-hueco="{{ equipo.max_miembros - equipo.miembros_count }}">
+
+            <div class="equipo-card-header">
+                <div class="equipo-info">
+                    <h3 class="equipo-nombre">{{ equipo.nombre }}</h3>
+                    {% if equipo.descripcion %}
+                    <p class="equipo-descripcion">{{ equipo.descripcion }}</p>
+                    {% endif %}
+                    <span class="equipo-miembros">
+                        <span class="miembros-actuales">{{ equipo.miembros_count }}</span>/<span class="miembros-max">{{ equipo.max_miembros }}</span> miembros
+                    </span>
+                </div>
+
+                {% if nombre_usuario %}
+                    {% if equipo.ya_es_miembro %}
+                        <button class="btn-salir"
+                                onclick="salirEquipo({{ equipo.id_equipo }}, this)">
+                            Salir
+                        </button>
+                    {% elif equipo.lleno %}
+                        <button class="btn-unirse" disabled>Completo</button>
+                    {% else %}
+                        <button class="btn-unirse"
+                                onclick="unirseEquipo({{ equipo.id_equipo }}, this)">
+                            Unirse
+                        </button>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="equipo-card-footer">
+                <button class="btn-toggle-miembros" onclick="toggleMiembros(this)">
+                    Ver miembros
+                </button>
+            </div>
+
+            <div class="lista-miembros oculta">
+                <ul>
+                    {% for miembro in equipo.miembros %}
+                    <li class="miembro-item {% if miembro.rol == 'capitan' %}capitan{% endif %}"
+                        data-id-usuario="{{ miembro.id_usuario }}">
+                        <span class="miembro-nombre">{{ miembro.nombre }}</span>
+                        {% if equipo.es_capitan_equipo and not miembro.es_yo %}
+                        <div class="acciones-miembro-equipo">
+                            <button class="btn-estrella-capitan {% if miembro.rol == 'capitan' %}activa{% endif %}"
+                                    title="{% if miembro.rol == 'capitan' %}Quitar capitán{% else %}Hacer capitán{% endif %}"
+                                    onclick="toggleCapitanMiembro({{ equipo.id_equipo }}, {{ miembro.id_usuario }}, this)">
+                                {% if miembro.rol == 'capitan' %}⭐{% else %}☆{% endif %}
+                            </button>
+                            <button class="btn-expulsar-equipo"
+                                    title="Expulsar"
+                                    onclick="expulsarMiembro({{ equipo.id_equipo }}, {{ miembro.id_usuario }}, this)">
+                                🗑️
+                            </button>
+                        </div>
+                        {% else %}
+                        <span class="miembro-icono">{% if miembro.rol == 'capitan' %}⭐{% endif %}</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="controles-paginacion oculto" id="paginacion-listaEquipos">
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaEquipos', '.equipo-card', -1)">←</button>
+        <span class="pagina-actual-texto">1 / 1</span>
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaEquipos', '.equipo-card', 1)">→</button>
+    </div>
+
+    {% else %}
+    <div class="equipos-vacio">
+        <p>No hay equipos todavía. ¡Crea el primero!</p>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    _actualizarPaginacion("listaEquipos", ".equipo-card");
+});
+
+function filtrarEquipos(texto) {
+    const q = texto.toLowerCase();
+    document.querySelectorAll("#listaEquipos .equipo-card").forEach(card => {
+        card.classList.toggle("oculto", !card.dataset.nombre.includes(q));
+    });
+    _resetPagina("listaEquipos");
+    _actualizarPaginacion("listaEquipos", ".equipo-card");
+}
+
+function ordenarEquipos(criterio) {
+    const lista = document.getElementById("listaEquipos");
+    if (!lista) return;
+    const cards = Array.from(lista.querySelectorAll(".equipo-card"));
+
+    cards.sort((a, b) => {
+        switch (criterio) {
+            case "alfabetico":
+                return a.dataset.nombre.localeCompare(b.dataset.nombre);
+            case "mas-miembros":
+                return parseInt(b.dataset.miembros) - parseInt(a.dataset.miembros);
+            case "menos-miembros":
+                return parseInt(a.dataset.miembros) - parseInt(b.dataset.miembros);
+            case "mas-hueco":
+                return parseInt(b.dataset.hueco) - parseInt(a.dataset.hueco);
+            default:
+                return 0;
+        }
+    });
+
+    cards.forEach(card => lista.appendChild(card));
+    _resetPagina("listaEquipos");
+    _actualizarPaginacion("listaEquipos", ".equipo-card");
+}
+
+function toggleMiembros(btn) {
+    const footer = btn.parentElement;
+    const card = footer.parentElement;
+    const lista = card.querySelector(".lista-miembros");
+    const abierta = !lista.classList.contains("oculta");
+    lista.classList.toggle("oculta");
+    btn.textContent = abierta ? "Ver miembros" : "Ocultar miembros";
+}
+
+function unirseEquipo(idEquipo, btn) {
+    btn.disabled = true;
+    fetch(`/equipos/${idEquipo}/unirse`, { method: "POST" })
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) {
+                _aviso("Error", data.error, "error");
+                btn.disabled = false;
+            } else {
+                location.reload();
+            }
+        });
+}
+
+function salirEquipo(idEquipo, btn) {
+    _aviso("¿Salir del equipo?", "¿Seguro que quieres salir del equipo?", "info");
+    const modal = document.getElementById("modalAviso");
+    const btnAceptar = document.getElementById("modalAvisoBtn");
+    _callbackAviso = () => {
+        modal.classList.add("oculto");
+        btn.disabled = true;
+        fetch(`/equipos/${idEquipo}/salir`, { method: "POST" })
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) {
+                    _aviso("Error", data.error, "error");
+                    btn.disabled = false;
+                } else {
+                    location.reload();
+                }
+            });
+    };
+}
+
+function expulsarMiembro(idEquipo, idUsuario, btn) {
+    fetch(`/equipos/${idEquipo}/expulsar/${idUsuario}`, { method: "DELETE" })
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) { _aviso("Error", data.error, "error"); return; }
+            const li = btn.closest(".miembro-item");
+            li?.remove();
+            const card = btn.closest(".equipo-card");
+            if (card) {
+                const span = card.querySelector(".miembros-actuales");
+                if (span) span.textContent = parseInt(span.textContent) - 1;
+            }
+        })
+        .catch(() => _aviso("Error", "Error de red al expulsar miembro", "error"));
+}
+
+function toggleCapitanMiembro(idEquipo, idUsuario, btn) {
+    fetch(`/equipos/${idEquipo}/capitan/${idUsuario}`, { method: "PATCH" })
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) { _aviso("Error", data.error, "error"); return; }
+            const esCapitanAhora = data.rol === "capitan";
+            btn.textContent = esCapitanAhora ? "⭐" : "☆";
+            btn.title = esCapitanAhora ? "Quitar capitán" : "Hacer capitán";
+            btn.classList.toggle("activa", esCapitanAhora);
+            const li = btn.closest(".miembro-item");
+            if (li) li.classList.toggle("capitan", esCapitanAhora);
+        })
+        .catch(() => _aviso("Error", "Error de red al cambiar capitán", "error"));
+}
+</script>
+
+{% endblock %}

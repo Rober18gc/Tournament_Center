@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Crear Torneo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='formusuario.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='formtorneo.css') }}">
+<script src="{{ url_for('static', filename='formtorneo.js') }}" defer></script>
+</head>
+<body>
+
+<div class="contenedor-principal">
+
+    <!-- IZQUIERDA: IMAGEN -->
+    <div class="lado-izquierdo">
+        <img src="{{ url_for('static', filename='imagenes/portadas/' ~ juego_imagen) }}"
+             alt="Imagen del juego" class="logo-form">
+    </div>
+
+    <!-- DERECHA: FORMULARIO -->
+    <div class="lado-derecho">
+        <h2>Crear Torneo</h2>
+        <div id="avisoFormTorneo"></div>
+
+        <form method="POST" id="formTorneo">
+            <input type="hidden" name="id_juego" value="{{ id_juego }}">
+
+            <div class="zonaNombre">
+                <div class="campo">
+                    <label>Nombre del torneo</label>
+                    <input type="text" name="nombre" placeholder="Nombre" required>
+                </div>
+
+                <div class="campo">
+                    <label>{% if es_equipo %}Máx equipos{% else %}Máx jugadores{% endif %}</label>
+                    <select name="max_participantes" required>
+                        <option value="8">8</option>
+                        <option value="16">16</option>
+                        <option value="32">32</option>
+                        <option value="64">64</option>
+                        <option value="128">128</option>
+                    </select>
+                </div>
+            </div>
+
+            {% if es_equipo %}
+            <div class="zonaNombre">
+                <div class="campo">
+                    <label>Máx miembros por equipo</label>
+                    <select name="max_miembros_equipo" required>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="zonafechaemail">
+                <div class="campo">
+                    <label>Fecha inicio</label>
+                    <input type="date" name="fecha_inicio" id="fecha_inicio" required>
+                </div>
+                <div class="campo">
+                    <label>Fecha final</label>
+                    <input type="date" name="fecha_final" id="fecha_final" required>
+                </div>
+            </div>
+
+            <label>Descripción</label>
+            <textarea name="descripcion" rows="4" placeholder="Escribe aquí la descripción..." required></textarea>
+
+            <div class="zonaboton">
+                <button type="submit">Crear torneo</button>
+                <button type="button" onclick="window.history.back()">Volver</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

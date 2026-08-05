@@ -1,0 +1,72 @@
+/* Imagen del juego más pequeña para no inflar la altura */
+.lado-izquierdo {
+    flex: 0 0 clamp(200px, 35%, 380px);
+}
+
+.logo-form {
+    max-width: 400px;
+    max-height: 440px;
+    object-fit: cover;
+}
+
+/* Menos padding y gap para que no sobre espacio abajo */
+.lado-derecho {
+    padding: 24px 36px;
+    gap: 12px;
+}
+
+form {
+    gap: 10px;
+}
+
+/* Inputs, selects y textarea con estilo oscuro */
+input, select, textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-family: inherit;
+    background-color: #3a3f47;
+    color: white;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #888;
+}
+
+select option {
+    background-color: #3a3f47;
+    color: white;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Campo individual dentro de una zona */
+.campo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+label {
+    font-size: 0.85rem;
+}
+
+@media screen and (max-width: 900px) {
+    .zonaNombre, .zonafechaemail {
+        flex-direction: column;
+    }
+
+    .lado-izquierdo {
+        display: none;
+    }
+
+    .lado-derecho {
+        padding: 20px;
+    }
+}

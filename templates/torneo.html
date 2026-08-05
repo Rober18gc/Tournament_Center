@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+
+{% block title %}Torneo{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='torneo.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina-torneo">
+
+    <!-- IZQUIERDA -->
+    <div class="columna izquierda">
+
+        <!-- ENCUENTROS -->
+        <div class="card">
+            <h2>Encuentros</h2>
+
+            <div class="scroll-box lista-encuentros">
+
+                {% for partida in partidas %}
+                <div class="encuentro-card" id="encuentro-{{ partida.id_partida }}">
+
+                    <div class="jugadores">
+                        {% set jugadores = partida.participantes %}
+                        {% if jugadores|length >= 2 %}
+                            {% if es_equipo %}
+                                {% set nombre_j1 = jugadores[0].participante_obj.equipo_obj.nombre
+                                   if jugadores[0].participante_obj and jugadores[0].participante_obj.equipo_obj
+                                   else "Eliminado" %}
+                                {% set nombre_j2 = jugadores[1].participante_obj.equipo_obj.nombre
+                                   if jugadores[1].participante_obj and jugadores[1].participante_obj.equipo_obj
+                                   else "Eliminado" %}
+                            {% else %}
+                                {% set nombre_j1 = jugadores[0].participante_obj.usuario_obj.nombre_usuario
+                                   if jugadores[0].participante_obj and jugadores[0].participante_obj.usuario_obj
+                                   else "Eliminado" %}
+                                {% set nombre_j2 = jugadores[1].participante_obj.usuario_obj.nombre_usuario
+                                   if jugadores[1].participante_obj and jugadores[1].participante_obj.usuario_obj
+                                   else "Eliminado" %}
+                            {% endif %}
+                            <span>{{ nombre_j1 }}</span>
+                            <span>VS</span>
+                            <span>{{ nombre_j2 }}</span>
+                        {% else %}
+                            <span>Esperando rival</span>
+                        {% endif %}
+                    </div>
+
+                    {% if partida.resultado_final %}
+                        <span class="resultado-final">
+                            Resultado: {{ partida.resultado_final }}
+                        </span>
+                    {% else %}
+
+                        {% set ns = namespace(usuario_en_partida=false) %}
+
+                        {% for participante in partida.participantes %}
+                            {% if participante.id_participante_torneo in ids_participante_usuario %}
+                                {% set ns.usuario_en_partida = true %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% set es_organizador = es_organizador_o_admin %}
+
+                        {% if partida.estado == "Pendiente de revision" %}
+                            {% if es_organizador %}
+                                <button class="btn-resultado btn-conflicto"
+                                        onclick="abrirModalRevision({{ partida.id_partida }})">
+                                    Revisar conflicto
+                                </button>
+                            {% else %}
+                                <span class="resultado-conflicto">En revisión</span>
+                            {% endif %}
+                        {% else %}
+                            <span id="timer-{{ partida.id_partida }}" class="timer-espera oculto"></span>
+
+                            {% if es_organizador %}
+                            <button id="btn-timer-organizador-{{ partida.id_partida }}"
+                                    class="btn-resultado btn-conflicto oculto"
+                                    onclick="abrirModalRevision({{ partida.id_partida }})">
+                                Tiempo agotado
+                            </button>
+                            {% endif %}
+
+                            {% if ns.usuario_en_partida %}
+                                <button class="btn-resultado"
+                                        onclick="abrirModalResultado({{ partida.id_partida }})">
+                                    Subir resultado
+                                </button>
+                            {% else %}
+                                <span class="resultado-pendiente">Pendiente</span>
+                            {% endif %}
+                        {% endif %}
+
+                    {% endif %}
+
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <!-- GRUPOS -->
+        <div class="card">
+            <h2>Grupos</h2>
+
+            <div id="gruposTorneo" class="scroll-box"></div>
+        </div>
+
+    </div>
+
+    <!-- CENTRO -->
+    <div class="columna centro">
+
+        <div class="card">
+            <h2>Tu información</h2>
+
+            <div class="perfil-mini" id="miParticipante">
+                <div class="avatar">A</div>
+                <p class="nombre">Cargando datos...</p>
+                <div class="stats">
+                    <span>-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card rival-container" id="rivalBox">
+            <h2>Rival</h2>
+
+            <div class="perfil-mini" id="rivalPerfil">
+                <div class="avatar" id="rivalAvatar">?</div>
+                <p class="nombre" id="rivalNombre">Selecciona un jugador</p>
+                <p id="rivalExtra"></p>
+
+                <div class="stats">
+                    <span id="rivalVictorias">Victorias: -</span>
+                    <span id="rivalDerrotas">Derrotas: -</span>
+                    <span id="rivalEmpates">Empates: -</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DERECHA -->
+    <div class="columna derecha">
+
+        <div class="card">
+            <h2>Clasificación</h2>
+
+            <div id="clasificacionGrupos" class="scroll-box"></div>
+        </div>
+
+        <div class="card">
+            <h2>Participantes</h2>
+
+            <div class="scroll-box" id="listaParticipantes">
+                {% if es_equipo %}
+                    {% for p in participantes %}
+                    <div class="usuario-card"
+                         data-equipo-id="{{ p.equipo_obj.id_equipo if p.equipo_obj else '' }}">
+                        {{ p.equipo_obj.nombre if p.equipo_obj else 'Equipo eliminado' }}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    {% for p in participantes %}
+                    <div class="usuario-card"
+                         data-usuario-id="{{ p.usuario_obj.id_usuario }}">
+                        {{ p.usuario_obj.nombre_usuario }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- BRACKET -->
+<div class="bracket-container">
+    <div class="card card-bracket">
+        <h2>Fase eliminatoria</h2>
+
+        <div id="bracket" class="bracket-grid"></div>
+
+    </div>
+</div>
+
+<!-- MODALES (SIN CAMBIOS) -->
+<div id="modalResultado" class="modal-resultado oculto">
+    <div class="modal-contenido">
+        <h2>Resultado de la partida</h2>
+
+        <form id="formResultado" enctype="multipart/form-data">
+            <input type="hidden" id="partidaId">
+
+            <div class="resultado-duelo">
+
+                <div class="resultado-box tu-resultado">
+                    <h3>Tú</h3>
+                    <input type="number" id="resultadoUsuario" required min="0">
+                </div>
+
+                <div class="vs-box">VS</div>
+
+                <div class="resultado-box rival-resultado">
+                    <h3>Rival</h3>
+                    <input type="number" id="resultadoRival" required min="0">
+                </div>
+
+            </div>
+
+            <div class="upload-captura">
+                <label>Captura (opcional)</label>
+                <input type="file" id="captura" accept="image/*">
+            </div>
+
+            <div class="botones-modal">
+                <button type="submit">Enviar resultado</button>
+                <button type="button" onclick="cerrarModalResultado()">Cancelar</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div id="modalRevision" class="modal-resultado oculto">
+    <div class="modal-contenido">
+
+        <h2>Resolver conflicto</h2>
+
+        <div id="contenidoConflicto"></div>
+
+        <div class="resultado-final-admin">
+            <input type="text"
+                   id="resultadoFinalAdmin"
+                   placeholder="Ejemplo 3-1">
+        </div>
+
+        <div class="botones-modal">
+            <button onclick="guardarResolucion()">Dar resultado final</button>
+            <button onclick="cerrarModalRevision()">Cancelar</button>
+        </div>
+
+    </div>
+</div>
+
+{% if mostrar_modal_organizador %}
+<div id="modalNuevoOrganizador" class="modal-login">
+    <div class="modal-login-contenido">
+
+        {% if es_obligatorio %}
+            <h3>Necesitas ser el organizador</h3>
+            <p>
+                El organizador anterior del torneo <strong>{{ torneo.nombre }}</strong> ya no está disponible
+                y todos los demás participantes han rechazado el cargo.
+                Al ser el último disponible, pasas a ser el organizador automáticamente.
+            </p>
+        {% else %}
+            <h3>¿Quieres ser el organizador?</h3>
+            <p>
+                El organizador anterior del torneo <strong>{{ torneo.nombre }}</strong> ya no está disponible.
+                ¿Aceptas el cargo de organizador?
+            </p>
+        {% endif %}
+
+        <p class="modal-organizador-info">
+            Responsabilidades del organizador:<br><br>
+            · Resolver conflictos cuando dos jugadores suban resultados distintos.<br>
+            · Resolver resultados que queden sin respuesta por parte de un jugador.
+        </p>
+
+        <div class="modal-login-botones modal-organizador-botones">
+            <button class="btn-register-modal" onclick="aceptarOrganizador({{ torneo.id_torneo }})">
+                Aceptar
+            </button>
+            {% if not es_obligatorio %}
+            <button class="btn-cerrar-modal" onclick="rechazarOrganizador({{ torneo.id_torneo }})">
+                Rechazar
+            </button>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endif %}
+
+<script>
+window.nombreUsuarioActual = "{{ nombre_usuario or '' }}";
+window.esOrganizadorTorneo = {{ 'true' if es_organizador_o_admin else 'false' }};
+window.esTorneoEquipo = {{ 'true' if es_equipo else 'false' }};
+
+function aceptarOrganizador(idTorneo) {
+    fetch(`/torneo/${idTorneo}/aceptar_organizador`, { method: "POST" })
+        .then(respuesta => respuesta.json())
+        .then(() => {
+            window.location.reload();
+        });
+}
+
+function rechazarOrganizador(idTorneo) {
+    fetch(`/torneo/${idTorneo}/rechazar_organizador`, { method: "POST" })
+        .then(respuesta => respuesta.json())
+        .then(() => {
+            document.getElementById("modalNuevoOrganizador").classList.add("oculto");
+        });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const idTorneo = {{ torneo.id_torneo }};
+
+    cargarGrupos(idTorneo);
+
+    setTimeout(() => {
+        cargarClasificacionGrupos(idTorneo);
+    }, 100);
+
+    cargarMiParticipante(idTorneo);
+    cargarEliminatorias(idTorneo);
+    iniciarSondeoPartidas(idTorneo, window.esOrganizadorTorneo);
+
+});
+</script>
+
+{% endblock %}

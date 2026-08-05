@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Crear Equipo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='formusuario.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='formequipos.css') }}">
+</head>
+<body>
+
+<div class="contenedor-principal">
+
+    <!-- IZQUIERDA: IMAGEN -->
+    <div class="lado-izquierdo">
+        <img src="{{ url_for('static', filename='imagenes/Logo.png') }}" alt="Logo" class="logo-form">
+    </div>
+
+    <!-- DERECHA: FORMULARIO -->
+    <div class="lado-derecho">
+        <h2>Crear Equipo</h2>
+
+        {% if error %}
+        <div class="aviso-form aviso-form-error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+
+            <label for="nombre">Nombre del equipo</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre del equipo" required maxlength="50">
+
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" name="descripcion" rows="3" placeholder="Describe tu equipo..." maxlength="300"></textarea>
+
+            <label for="max_miembros">Máximo de miembros</label>
+            <select id="max_miembros" name="max_miembros" required>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+
+            <div class="zonaboton">
+                <button type="submit">Crear equipo</button>
+                <button type="button" onclick="window.history.back()">Volver</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

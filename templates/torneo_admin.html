@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Ver Torneos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='administrador.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="panel-admin">
+
+    <h1 class="titulo-panel">Torneos</h1>
+
+    <div class="controles-lista">
+        <input type="text"
+               class="buscador-usuarios"
+               placeholder="Buscar torneo o juego..."
+               oninput="filtrarTorneosAdmin(this.value)">
+
+        <select class="selector-orden" onchange="filtrarTorneosAdminPorEstado(this.value)">
+            <option value="">Filtrar por estado...</option>
+            <option value="Activo">Activo</option>
+            <option value="Cerrado">Cerrado</option>
+            <option value="Finalizado">Finalizado</option>
+        </select>
+
+        <select class="selector-orden" onchange="ordenarSeccionesJuegoAdmin(this.value)">
+            <option value="">Ordenar juegos por...</option>
+            <option value="alfabetico">Alfabético (A-Z)</option>
+            <option value="max-torneos">Más torneos primero</option>
+            <option value="min-torneos">Menos torneos primero</option>
+        </select>
+    </div>
+
+    <div class="lista-usuarios" id="listaTorneosAdmin">
+
+        {% for juego in juegos %}
+        {% if juego.torneos %}
+        <div class="fila-usuario seccion-juego-torneos"
+             data-juego="{{ juego.nombre_juego | lower }}"
+             data-num-torneos="{{ juego.torneos | length }}">
+
+            <div class="cabecera-fila" onclick="toggleDesplegableTorneoAdmin(this)">
+                <span class="nombre-fila">{{ juego.nombre_juego }}</span>
+                <span class="contador-torneos-badge">{{ juego.torneos | length }} torneo(s)</span>
+            </div>
+
+            <div class="panel-desplegable oculto">
+                {% for torneo in juego.torneos %}
+                <div class="fila-torneo-admin"
+                     data-nombre="{{ torneo.nombre | lower }}"
+                     data-juego="{{ juego.nombre_juego | lower }}"
+                     data-estado="{{ torneo.estado }}">
+
+                    <div class="cabecera-torneo-admin" onclick="toggleDetalleTorneoAdmin(this)">
+                        <div class="info-torneo-cabecera">
+                            <span class="nombre-torneo-admin">{{ torneo.nombre }}</span>
+                            <span class="estado-torneo-badge estado-{{ torneo.estado | lower }}">{{ torneo.estado }}</span>
+                        </div>
+                        <div class="botones-fila">
+                            {% if torneo.estado not in ("Finalizado", "Cerrado") and torneo.id_usuario == admin.id_usuario %}
+                            <button class="btn-cerrar-torneo-admin"
+                                    onclick="event.stopPropagation(); cerrarTorneoAdmin({{ torneo.id_torneo }}, this)">
+                                Cerrar torneo
+                            </button>
+                            {% endif %}
+                            <a class="btn-entrar-torneo"
+                               href="/torneo/{{ torneo.id_torneo }}"
+                               onclick="event.stopPropagation()">Entrar</a>
+                        </div>
+                    </div>
+
+                    <div class="detalle-torneo-admin oculto">
+                        <div class="dato-fila dato-solo-lectura">
+                            <span class="etiqueta-dato">Creador</span>
+                            <span class="valor-dato">{{ torneo.usuario_obj.nombre_usuario if torneo.usuario_obj else '-' }}</span>
+                        </div>
+                        <div class="dato-fila dato-solo-lectura">
+                            <span class="etiqueta-dato">Fecha inicio</span>
+                            <span class="valor-dato">{{ torneo.fecha_inicio }}</span>
+                        </div>
+                        <div class="dato-fila dato-solo-lectura">
+                            <span class="etiqueta-dato">Fecha fin</span>
+                            <span class="valor-dato">{{ torneo.fecha_final }}</span>
+                        </div>
+                        <div class="dato-fila dato-solo-lectura">
+                            <span class="etiqueta-dato">Participantes</span>
+                            <span class="valor-dato">{{ torneo.participantes | length }} / {{ torneo.max_participantes }}</span>
+                        </div>
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+        {% endif %}
+        {% endfor %}
+
+    </div>
+
+    <div class="controles-paginacion oculto" id="paginacion-listaTorneosAdmin">
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaTorneosAdmin', '.seccion-juego-torneos', -1)">←</button>
+        <span class="pagina-actual-texto">1 / 1</span>
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaTorneosAdmin', '.seccion-juego-torneos', 1)">→</button>
+    </div>
+
+</div>
+
+{% endblock %}

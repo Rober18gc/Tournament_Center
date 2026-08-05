@@ -1,0 +1,1285 @@
+.oculto {
+    display: none !important;
+}
+
+/* ================================
+   PANEL DE ADMINISTRACIÓN
+   ================================ */
+
+.panel-admin {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.titulo-panel {
+    text-align: center;
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 20px 0 24px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-family: 'Arial', sans-serif;
+}
+
+/* ================================
+   CONTROLES (BUSCADOR + ORDEN)
+   ================================ */
+
+.controles-lista {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.buscador-usuarios {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.28);
+    color: #fff;
+    font-size: 1rem;
+    box-sizing: border-box;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.buscador-usuarios:focus {
+    border-color: #1a73e8;
+}
+
+.buscador-usuarios::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.selector-orden {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.28);
+    color: #fff;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    transition: border 0.2s;
+    flex-shrink: 0;
+}
+
+.selector-orden:focus {
+    border-color: #1a73e8;
+}
+
+.selector-orden option {
+    background: #1e1e1e;
+    color: #fff;
+}
+
+/* ================================
+   LISTA DE USUARIOS
+   ================================ */
+
+.lista-usuarios {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fila-usuario {
+    background: #1e1e1e;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.fila-usuario:hover {
+    border-color: rgba(26, 115, 232, 0.4);
+}
+
+/* ================================
+   CABECERA DE CADA FILA
+   ================================ */
+
+.cabecera-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+}
+
+.cabecera-fila:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.cabecera-fila.abierto {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(26, 115, 232, 0.08);
+}
+
+.nombre-fila {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.botones-fila {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* ================================
+   BOTONES LÁPIZ Y PAPELERA
+   ================================ */
+
+.btn-lapiz,
+.btn-papelera,
+.btn-lapiz-dato {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    line-height: 1;
+}
+
+.btn-lapiz:hover {
+    background: rgba(26, 115, 232, 0.2);
+}
+
+.btn-papelera:hover {
+    background: rgba(229, 57, 53, 0.2);
+}
+
+.btn-lapiz-dato:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ================================
+   PANEL DESPLEGABLE
+   ================================ */
+
+.panel-desplegable {
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.panel-desplegable.oculto {
+    display: none;
+}
+
+/* ================================
+   FILAS DE DATOS
+   ================================ */
+
+.dato-fila {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dato-fila:last-child {
+    border-bottom: none;
+}
+
+.etiqueta-dato {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    min-width: 160px;
+    flex-shrink: 0;
+}
+
+.valor-dato {
+    color: #fff;
+    font-size: 0.95rem;
+    flex: 1;
+}
+
+.separador-solo-lectura {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 6px 0;
+}
+
+.dato-solo-lectura .etiqueta-dato {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.dato-solo-lectura .valor-dato {
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+}
+
+.input-edicion {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid #1a73e8;
+    border-radius: 6px;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 0.95rem;
+    outline: none;
+    flex: 1;
+}
+
+.input-edicion option {
+    background: #1e1e1e;
+    color: #fff;
+}
+
+/* ================================
+   AVISO FLOTANTE
+   ================================ */
+
+.aviso-admin {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    text-align: center;
+    transition: opacity 0.3s;
+}
+
+.aviso-exito {
+    background: rgba(40, 167, 69, 0.25);
+    border: 1px solid rgba(40, 167, 69, 0.5);
+    color: #6fcf8a;
+}
+
+.aviso-error {
+    background: rgba(229, 57, 53, 0.2);
+    border: 1px solid rgba(229, 57, 53, 0.5);
+    color: #ff4444;
+}
+
+#avisoCreacion.aviso-error {
+    color: #000;
+    font-weight: 600;
+}
+
+.aviso-admin.oculto {
+    display: none;
+}
+
+/* ================================
+   MODAL BORRAR USUARIO
+   ================================ */
+
+.modal-borrar {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-borrar.oculto {
+    display: none;
+}
+
+.modal-borrar-contenido {
+    background: #1e1e2f;
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-borrar-contenido h3 {
+    color: #fff;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+}
+
+.modal-borrar-contenido p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+}
+
+.modal-borrar-contenido strong {
+    color: #fff;
+}
+
+.modal-borrar-botones {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.contador-torneos-badge {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.45);
+    margin-right: 8px;
+}
+
+.fila-torneo-admin {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.fila-torneo-admin:last-child {
+    border-bottom: none;
+}
+
+.fila-torneo-admin.oculto {
+    display: none !important;
+}
+
+.cabecera-torneo-admin {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px 10px 32px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cabecera-torneo-admin:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.info-torneo-cabecera {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.nombre-torneo-admin {
+    color: #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.detalle-torneo-admin {
+    padding: 0 20px 6px 32px;
+}
+
+.detalle-torneo-admin.oculto {
+    display: none !important;
+}
+
+.estado-torneo-badge {
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.estado-activo     { background: #2e7d32; color: #fff; }
+.estado-cerrado    { background: #e65100; color: #fff; }
+.estado-finalizado { background: #424242; color: #ccc; }
+
+.controles-paginacion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px 0 8px;
+}
+
+.btn-paginacion {
+    background: #23272f;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-paginacion:hover:not(:disabled) {
+    background: #3875f6;
+    color: #fff;
+    border-color: #3875f6;
+}
+
+.btn-paginacion:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.pagina-actual-texto {
+    color: #c9d1d9;
+    font-size: 0.97rem;
+    min-width: 60px;
+    text-align: center;
+}
+
+.oculto-paginacion {
+    display: none !important;
+}
+
+.btn-borrar-finalizados {
+    background: #b71c1c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.btn-borrar-finalizados:hover {
+    background: #7f0000;
+}
+
+.fila-torneo-gestion {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.fila-torneo-gestion:last-child {
+    border-bottom: none;
+}
+
+.fila-torneo-gestion.oculto {
+    display: none !important;
+}
+
+.cabecera-torneo-gestion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px 10px 32px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cabecera-torneo-gestion:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.detalle-torneo-gestion {
+    padding: 4px 20px 10px 32px;
+}
+
+.detalle-torneo-gestion.oculto {
+    display: none !important;
+}
+
+.input-descripcion-torneo {
+    width: 100%;
+    resize: vertical;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    color: #fff;
+    padding: 6px 8px;
+    font-size: 0.9rem;
+}
+
+.select-rol-participante {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.select-rol-participante option {
+    background: #1e1e2f;
+}
+
+.elemento-participante {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+}
+
+.rol-participante {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.82rem;
+}
+
+.seccion-participantes-equipo {
+    padding: 8px 0 4px;
+}
+
+.lista-participantes-equipo {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 0;
+}
+
+.rol-capitan {
+    color: #f4b942;
+    font-weight: 600;
+    font-size: 0.82rem;
+}
+
+.acciones-miembro {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.btn-hacer-capitan,
+.btn-quitar-capitan {
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: 1px solid;
+}
+
+.btn-hacer-capitan {
+    background: rgba(56, 117, 246, 0.15);
+    color: #3875f6;
+    border-color: rgba(56, 117, 246, 0.3);
+}
+
+.btn-hacer-capitan:hover {
+    background: rgba(56, 117, 246, 0.3);
+}
+
+.btn-quitar-capitan {
+    background: rgba(244, 185, 66, 0.15);
+    color: #f4b942;
+    border-color: rgba(244, 185, 66, 0.3);
+}
+
+.btn-quitar-capitan:hover {
+    background: rgba(244, 185, 66, 0.3);
+}
+
+.btn-expulsar-miembro {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 2px 4px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.btn-expulsar-miembro:hover {
+    opacity: 1;
+}
+
+.btn-entrar-torneo {
+    background: #5c6bc0;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 16px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-entrar-torneo:hover {
+    background: #3949ab;
+}
+
+.btn-cerrar-torneo-admin {
+    background: #e65100;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    transition: background 0.2s;
+}
+
+.btn-cerrar-torneo-admin:hover {
+    background: #bf360c;
+}
+
+.btn-confirmar-borrar-admin {
+    background: #e53935;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+}
+
+.btn-confirmar-borrar-admin:hover {
+    background: #b52b27;
+}
+
+.btn-cancelar-borrar {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+}
+
+.btn-cancelar-borrar:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* ================================
+   BOTÓN OJO (CONTRASEÑA)
+   ================================ */
+
+.btn-ojo {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.btn-ojo:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ================================
+   BOTONES ACEPTAR / RESTABLECER
+   ================================ */
+
+.botones-desplegable {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0 6px 0;
+}
+
+.btn-aceptar-cambios {
+    background: #1a73e8;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s, opacity 0.2s;
+}
+
+.btn-aceptar-cambios:hover:not(:disabled) {
+    background: #1558b0;
+}
+
+.btn-aceptar-cambios:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.btn-restablecer-cambios {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.btn-restablecer-cambios:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* ================================
+   LISTA DE CAMBIOS PENDIENTES
+   ================================ */
+
+.lista-cambios-pendientes {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    text-align: left;
+}
+
+.lista-cambios-pendientes li {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ================================
+   FORMULARIO CREAR/EDITAR JUEGO
+   ================================ */
+
+.contenedor-form-juego {
+    display: flex;
+    background-color: #2b2f36;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 85%;
+    max-width: 980px;
+    margin: 30px auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    color: #fff;
+}
+
+.form-juego-izquierda {
+    flex: 0 0 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 30px 24px;
+    gap: 14px;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.label-portada {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+}
+
+.zona-subida-portada {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.previa-portada-grande {
+    width: 260px;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.texto-subida {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+}
+
+.input-portada-oculto {
+    display: none;
+}
+
+.form-juego-derecha {
+    flex: 1;
+    padding: 30px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-juego-titulo {
+    margin: 0 0 4px 0;
+    text-align: center;
+    font-size: 1.4rem;
+    color: #fff;
+}
+
+.form-juego-derecha form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.form-fila {
+    display: flex;
+    gap: 12px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.campo label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.campo input,
+.campo select {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 0.85rem;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    transition: background 0.2s;
+}
+
+.campo input:focus,
+.campo select:focus {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.campo select option {
+    background: #2b2f36;
+    color: #fff;
+}
+
+.seccion-elementos {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.label-seccion {
+    margin: 0;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+}
+
+.fila-añadir {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.fila-añadir input,
+.select-habilidad {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 0.8rem;
+    outline: none;
+    min-width: 0;
+}
+
+.select-habilidad option {
+    background: #2b2f36;
+}
+
+.btn-añadir {
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    font-weight: bold;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-añadir:hover {
+    background: #45a049;
+}
+
+.lista-elementos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 140px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+.elemento-lista {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 6px;
+    padding: 7px 12px;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.elemento-lista em {
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+    margin-left: 6px;
+}
+
+.btn-eliminar-elemento {
+    background: none;
+    border: none;
+    color: rgba(229, 57, 53, 0.8);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-eliminar-elemento:hover {
+    background: rgba(229, 57, 53, 0.15);
+}
+
+.form-botones {
+    margin-top: 4px;
+}
+
+.btn-guardar-juego {
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 28px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-guardar-juego:hover {
+    background: #45a049;
+}
+
+.btn-cancelar-juego {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 28px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-cancelar-juego:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+@media screen and (max-width: 900px) {
+    .contenedor-form-juego {
+        flex-direction: column;
+        width: 95%;
+    }
+
+    .form-juego-izquierda {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 20px;
+    }
+
+    .form-fila {
+        flex-direction: column;
+    }
+
+    .controles-lista {
+        flex-direction: column;
+    }
+
+    .cabecera-fila {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .nombre-fila {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .botones-fila {
+        flex-shrink: 0;
+    }
+
+    .dato-fila {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .etiqueta-dato {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .valor-dato {
+        width: 100%;
+    }
+}
+
+/* ================================
+   ZONA ADMINISTRACIÓN DE JUEGOS
+   (zona_juego_admin.html — cards selección)
+   ================================ */
+
+.titulo-zona-juegos {
+    text-align: center;
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 20px 0 40px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-family: 'Arial', sans-serif;
+}
+
+.grid-juegos-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    max-width: 620px !important;
+}
+
+/* ================================
+   GESTIÓN DE JUEGOS
+   (administrador_juego.html — lista editable)
+   ================================ */
+
+.btn-añadir-juego {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    line-height: 1;
+}
+
+.btn-añadir-juego:hover {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.seccion-anadir-elemento {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.subseccion-anadir {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.label-subseccion {
+    margin: 0;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+}
+
+.fila-anadir-inline {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.input-anadir-elemento {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 0.82rem;
+    outline: none;
+    min-width: 0;
+}
+
+.select-anadir {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.select-anadir option {
+    background: #1e1e2f;
+}
+
+.btn-anadir-inline {
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-anadir-inline:hover {
+    background: #45a049;
+}
+
+.grupo-elementos {
+    margin-top: 6px;
+}
+
+.label-grupo {
+    margin: 0 0 4px 0;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.lista-elementos-juego {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 160px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+.elemento-juego {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #fff;
+    font-size: 0.88rem;
+}
+
+.elemento-juego em {
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+    margin-left: 4px;
+}
+
+.botones-elemento {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.valor-elemento {
+    flex: 1;
+}
+
+.input-edicion-elemento {
+    flex: 1;
+    min-width: 0;
+    margin-right: 6px;
+}
+
+.seccion-info-juego {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.fila-info-juego {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 30px;
+}
+
+.label-info {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    width: 55px;
+    flex-shrink: 0;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.valor-info {
+    flex: 1;
+    font-size: 0.88rem;
+    color: #fff;
+}
+
+.previa-portada-mini {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.btn-portada-label {
+    cursor: pointer;
+    position: relative;
+}
+
+.btn-portada-label input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.input-edicion-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.input-nuevo-genero-info,
+.input-nuevo-genero {
+    flex: 1;
+    min-width: 0;
+}
+
+.select-edicion-info {
+    flex: 1;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 0.82rem;
+    outline: none;
+}
+
+.select-edicion-info option {
+    background: #1e1e2f;
+}

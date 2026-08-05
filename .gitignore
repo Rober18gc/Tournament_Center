@@ -1,0 +1,23 @@
+# Entorno virtual
+.venv/
+
+# Base de datos
+database/*.db
+
+# Portadas subidas por usuarios
+static/portadas/
+
+# Variables de entorno
+.env
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# PyCharm
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

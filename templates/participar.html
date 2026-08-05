@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Participar en torneo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='participar.css') }}">
+<script src="{{ url_for('static', filename='participar.js') }}" defer></script>
+</head>
+
+<body>
+
+<div class="contenedor-principal">
+
+    <!-- IZQUIERDA -->
+    <div class="lado-izquierdo">
+        <img src="{{ url_for('static', filename='imagenes/Logo.png') }}"
+             class="logo-form">
+    </div>
+
+    <!-- DERECHA -->
+    <div class="lado-derecho">
+
+        <h2>Participar en Torneo</h2>
+        <div id="avisoFormParticipar"></div>
+
+        <form method="POST" id="formParticipar" {% if es_equipo %}data-equipo="true"{% endif %}>
+
+            <input type="hidden" name="id_torneo" value="{{ id_torneo }}">
+
+            <!-- USUARIO + TORNEO EN LINEA -->
+            <div class="zona-usuario-torneo">
+                <div>
+                    <label>Usuario</label>
+                    <input type="text" value="{{ usuario.nombre_usuario }}" readonly>
+                </div>
+                <div>
+                    <label>Torneo</label>
+                    <input type="text" value="{{ torneo.nombre }}" readonly>
+                </div>
+            </div>
+
+            {% if es_equipo %}
+
+            <!-- SELECTOR DE EQUIPO -->
+            {% if equipos_disponibles %}
+            <label>Tu equipo</label>
+            <select name="id_equipo" id="selectEquipo" onchange="mostrarMiembros(this.value)" required>
+                <option value="">-- Selecciona equipo --</option>
+                {% for ed in equipos_disponibles %}
+                <option value="{{ ed.equipo.id_equipo }}">
+                    {{ ed.equipo.nombre }} ({{ ed.miembros|length }} miembros)
+                </option>
+                {% endfor %}
+            </select>
+
+            <!-- MIEMBROS POR EQUIPO -->
+            {% for ed in equipos_disponibles %}
+            <div id="miembros-{{ ed.equipo.id_equipo }}" class="zona-miembros" style="display:none">
+                <div class="miembros-header">
+                    <label>Miembros participantes
+                        {% if max_miembros < 999 %}(máx {{ max_miembros }}){% endif %}
+                    </label>
+                    <button type="button" class="btn-añadir-max"
+                            onclick="seleccionarMaximos('miembros-{{ ed.equipo.id_equipo }}', {{ max_miembros }})">
+                        Añadir máximo
+                    </button>
+                </div>
+                <div class="lista-checkboxes">
+                    {% for m in ed.miembros %}
+                    <label class="miembro-check">
+                        <input type="checkbox" name="miembros" value="{{ m.id }}"
+                               data-max="{{ max_miembros }}"
+                               onchange="limitarCheckboxes(this, {{ max_miembros }})">
+                        {{ m.nombre }}
+                        {% if m.rol == 'capitan' %}<span class="badge-capitan">Capitán</span>{% endif %}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            {% else %}
+            <div class="aviso-sin-equipo">
+                No tienes equipos con al menos 5 miembros disponibles para este torneo.
+                <br>Crea o únete a un equipo con suficientes miembros.
+            </div>
+            {% endif %}
+
+            {% else %}
+
+            <!-- PERSONAJES -->
+            {% if personajes %}
+            <label>Personaje</label>
+            <select name="id_personaje">
+                <option value="">Selecciona personaje</option>
+                {% for p in personajes %}
+                    <option value="{{ p.id_personaje }}">{{ p.nombre_personaje }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            <!-- CLUBS -->
+            {% if clubs %}
+            <label>Club</label>
+            <select name="id_club">
+                <option value="">Selecciona club</option>
+                {% for c in clubs %}
+                    <option value="{{ c.id_club }}">{{ c.nombre_club }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            <!-- ARMAS (PRIMARIA) -->
+            {% if arma_principal %}
+            <label>Arma principal</label>
+            <select name="id_arma_principal">
+                <option value="">Selecciona arma principal</option>
+                {% for a in arma_principal %}
+                <option value="{{ a.id_armas }}">{{ a.nombre_arma }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            <!-- ARMAS (SECUNDARIA) -->
+            {% if arma_secundaria %}
+            <label>Arma secundaria</label>
+            <select name="id_arma_secundaria">
+                <option value="">Selecciona arma secundaria</option>
+                {% for a in arma_secundaria %}
+                <option value="{{ a.id_armas }}">{{ a.nombre_arma }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            <!-- ARMAS (ARROJADIZA) -->
+            {% if arma_arrojadiza %}
+            <label>Arma arrojadiza</label>
+            <select name="id_arma_arrojadiza">
+                <option value="">Selecciona arma arrojadiza</option>
+                {% for a in arma_arrojadiza %}
+                <option value="{{ a.id_armas }}">{{ a.nombre_arma }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            {% endif %}
+
+            <!-- BOTONES -->
+            <div class="zonaboton">
+                {% if es_equipo and not equipos_disponibles %}
+                <button type="button" onclick="window.history.back()">Volver</button>
+                {% else %}
+                <button type="submit">Unirse al torneo</button>
+                <button type="button" onclick="window.history.back()">Volver</button>
+                {% endif %}
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

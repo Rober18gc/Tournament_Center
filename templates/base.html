@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Tournament Center{% endblock %}</title>
+
+    <!-- CSS GLOBAL -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+
+    <!-- CSS ESPECÍFICO DE CADA PÁGINA -->
+    {% block extra_css %}{% endblock %}
+
+    <script>window.usuarioLogueado = {{ 'true' if nombre_usuario else 'false' }};</script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/mando32.png') }}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="{{ url_for('static', filename='imagenes/Logo.png') }}"
+                 class="logo-sidebar"
+                 onclick="window.location.href='/'">
+        </div>
+
+        {% if pagina_actual == 'index' %}
+            <li class="menu-titulo" onclick="toggleGeneros()">Género</li>
+            <ul id="submenuGeneros" class="submenu">
+                <li onclick="mostrarTodosJuegos()">Todos</li>
+                {% for genero in generos %}
+                <li onclick="mostrarJuegosGenero('{{ genero.nombre_genero | lower }}')">{{ genero.nombre_genero }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <li class="menu-titulo" onclick="toggleEquipos()">Equipos</li>
+        <ul id="submenuEquipos" class="submenu">
+            <button class="submenu-btn" onclick="window.location.href='/equipos'">Ver equipos</button>
+            <button class="submenu-btn" onclick="irACrearEquipo()">Crear equipo</button>
+        </ul>
+
+        <li class="menu-titulo" onclick="crearTorneo()">Crear torneo</li>
+
+        <li class="menu-titulo" onclick="verClasificacion()">Clasificación global</li>
+
+        <li class="menu-titulo" onclick="verPerfil()">
+            Tu perfil {% if not nombre_usuario %} 🔒 {% endif %}
+        </li>
+
+    </aside>
+
+    <div class="zona-derecha">
+
+        <!-- HEADER -->
+        <header>
+            <div class="cabecera">
+
+                <img src="{{ url_for('static', filename='imagenes/Logo.png') }}"
+                     class="imagencabezera"
+                     onclick="window.location.href='/'">
+
+                <div class="header-right">
+                    {% if nombre_usuario %}
+                        <div class="usuario-container">
+                            <span class="usuario-logueado">👤 {{ nombre_usuario }}</span>
+                            <a href="/logout"><button class="btn-login">Cerrar sesión</button></a>
+                        </div>
+                    {% else %}
+                        <button class="btn-login" id="btnLogin">Iniciar Sesión</button>
+                    {% endif %}
+
+                    <div class="boton_rayas">
+                        <button class="btn-menu" id="btnMenu">☰</button>
+                    </div>
+                </div>
+
+                <!-- LOGIN BOX -->
+                <div class="login-box {% if get_flashed_messages() %}show{% endif %}" id="loginBox">
+                    <h3>Iniciar Sesión</h3>
+                    <form method="POST" action="/login?next={{ request.path }}">
+                        <input type="text" name="nombre_usuario" placeholder="Usuario">
+                        <input type="password" name="password" placeholder="Contraseña">
+
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                        {% for category, message in messages %}
+                        <p class="error-login">{{ message }}</p>
+                        {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+
+                        <div class="botones-login">
+                            <button class="btn-entrar" type="submit">Entrar</button>
+                            <button class="btn-registrar" type="button" onclick="window.location.href='{{ url_for('formusuario') }}'">Registrar</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- CONTENIDO -->
+        <main class="contenido" id="contenido">
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+
+</div>
+
+<div id="modalAviso" class="modal-login oculto">
+    <div class="modal-login-contenido">
+        <h3 id="modalAvisoTitulo"></h3>
+        <p id="modalAvisoMensaje"></p>
+        <div class="modal-login-botones">
+            <button id="modalAvisoBtn" onclick="_cerrarAviso()" class="btn-register-modal">Aceptar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalLoginCrearTorneo" class="modal-login oculto">
+    <div class="modal-login-contenido">
+        <h3>Acceso restringido</h3>
+        <p>Debes iniciar sesión o registrarte para crear un torneo.</p>
+        <div class="modal-login-botones">
+            <button onclick="window.location.href='/formusuario'" class="btn-register-modal">
+                Registrarse
+            </button>
+            <button onclick="cerrarModalLoginCrearTorneo()" class="btn-cerrar-modal">
+                Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

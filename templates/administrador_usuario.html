@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Usuarios{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='administrador.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="panel-admin">
+
+    <h1 class="titulo-panel">Gestión de Usuarios</h1>
+
+    <div class="controles-lista">
+        <input type="text"
+               class="buscador-usuarios"
+               placeholder="Buscar usuario..."
+               oninput="filtrarUsuarios(this.value)">
+
+        <select class="selector-orden" onchange="ordenarUsuarios(this.value)">
+            <option value="">Ordenar por...</option>
+            <option value="alfabetico">Alfabético (A-Z)</option>
+            <option value="edad">Edad (mayor a menor)</option>
+            <option value="rol">Rol</option>
+            <option value="torneos-participados">Torneos participados</option>
+            <option value="torneos-creados">Torneos creados</option>
+            <option value="torneos-ganados">Torneos ganados</option>
+        </select>
+    </div>
+
+    <div class="lista-usuarios" id="listaUsuarios">
+
+        {% for usuario in usuarios %}
+        <div class="fila-usuario"
+             data-id="{{ usuario.id_usuario }}"
+             data-nombre="{{ usuario.nombre_usuario }}"
+             data-fecha="{{ usuario.fecha_nacimiento }}"
+             data-rol-orden="{{ usuario.rol_orden }}"
+             data-torneos-participados="{{ usuario.torneos_participados }}"
+             data-torneos-creados="{{ usuario.torneos_creados }}"
+             data-torneos-ganados="{{ usuario.torneos_ganados }}"
+             data-password="{{ usuario.password }}">
+
+            <div class="cabecera-fila" onclick="toggleDesplegable(this)">
+                <span class="nombre-fila">{{ usuario.nombre_usuario }}</span>
+                <div class="botones-fila">
+                    <button class="btn-lapiz"
+                            onclick="editarTodo(event, this)"
+                            title="Editar todo">✏️</button>
+                    <button class="btn-papelera"
+                            onclick="abrirModalBorrar(event, {{ usuario.id_usuario }}, '{{ usuario.nombre_usuario }}')"
+                            title="Borrar usuario">🗑️</button>
+                </div>
+            </div>
+
+            <div class="panel-desplegable oculto">
+                <div class="dato-fila">
+                    <span class="etiqueta-dato">Nombre de usuario</span>
+                    <span class="valor-dato">{{ usuario.nombre_usuario }}</span>
+                    <button class="btn-lapiz-dato" onclick="editarDato(event, this)">✏️</button>
+                </div>
+                <div class="dato-fila">
+                    <span class="etiqueta-dato">Nombre</span>
+                    <span class="valor-dato">{{ usuario.nombre }}</span>
+                    <button class="btn-lapiz-dato" onclick="editarDato(event, this)">✏️</button>
+                </div>
+                <div class="dato-fila">
+                    <span class="etiqueta-dato">Apellidos</span>
+                    <span class="valor-dato">{{ usuario.apellidos }}</span>
+                    <button class="btn-lapiz-dato" onclick="editarDato(event, this)">✏️</button>
+                </div>
+                <div class="dato-fila">
+                    <span class="etiqueta-dato">Email</span>
+                    <span class="valor-dato">{{ usuario.email }}</span>
+                    <button class="btn-lapiz-dato" onclick="editarDato(event, this)">✏️</button>
+                </div>
+                <div class="dato-fila dato-solo-lectura">
+                    <span class="etiqueta-dato">Fecha de nacimiento</span>
+                    <span class="valor-dato">{{ usuario.fecha_nacimiento }}</span>
+                </div>
+                <div class="dato-fila">
+                    <span class="etiqueta-dato">Rol</span>
+                    <span class="valor-dato">{{ usuario.rol }}</span>
+                    <button class="btn-lapiz-dato" onclick="editarDato(event, this)">✏️</button>
+                </div>
+                <div class="dato-fila">
+                    <span class="etiqueta-dato">Contraseña</span>
+                    <span class="valor-dato span-password">••••••••</span>
+                    <button class="btn-ojo" onclick="toggleVerPassword(event, {{ usuario.id_usuario }})" title="Ver contraseña">👁️</button>
+                </div>
+
+                <div class="botones-desplegable">
+                    <button class="btn-aceptar-cambios"
+                            onclick="aceptarCambiosUsuario({{ usuario.id_usuario }})"
+                            disabled>Aceptar</button>
+                    <button class="btn-restablecer-cambios"
+                            onclick="restablecerCambiosUsuario({{ usuario.id_usuario }})">Restablecer</button>
+                </div>
+
+                <div class="separador-solo-lectura"></div>
+                <div class="dato-fila dato-solo-lectura">
+                    <span class="etiqueta-dato">Torneos participados</span>
+                    <span class="valor-dato">{{ usuario.torneos_participados }}</span>
+                </div>
+                <div class="dato-fila dato-solo-lectura">
+                    <span class="etiqueta-dato">Torneos creados</span>
+                    <span class="valor-dato">{{ usuario.torneos_creados }}</span>
+                </div>
+                <div class="dato-fila dato-solo-lectura">
+                    <span class="etiqueta-dato">Torneos ganados</span>
+                    <span class="valor-dato">{{ usuario.torneos_ganados }}</span>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="controles-paginacion oculto" id="paginacion-listaUsuarios">
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaUsuarios', '.fila-usuario', -1)">←</button>
+        <span class="pagina-actual-texto">1 / 1</span>
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaUsuarios', '.fila-usuario', 1)">→</button>
+    </div>
+
+</div>
+
+<!-- MODAL CONFIRMAR BORRADO -->
+<div id="modalConfirmarBorrar" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>¿Borrar usuario?</h3>
+        <p>Vas a borrar a <strong id="nombreUsuarioBorrar"></strong>. Esta acción es irreversible.</p>
+        <div class="modal-borrar-botones">
+            <button class="btn-confirmar-borrar-admin" onclick="confirmarBorrar()">Sí, borrar</button>
+            <button class="btn-cancelar-borrar" onclick="cerrarModalBorrar()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ERROR AL GUARDAR -->
+<div id="modalErrorAdmin" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>Error al guardar</h3>
+        <p id="textoModalErrorAdmin"></p>
+        <div class="modal-borrar-botones">
+            <button class="btn-cancelar-borrar" onclick="cerrarModalErrorAdmin()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CAMBIOS PENDIENTES AL CERRAR SESIÓN -->
+<div id="modalCambiosPendientes" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>Cambios sin guardar</h3>
+        <p>Tienes cambios pendientes en estos usuarios:</p>
+        <ul id="listaCambiosPendientes" class="lista-cambios-pendientes"></ul>
+        <div class="modal-borrar-botones">
+            <button class="btn-confirmar-borrar-admin" onclick="aceptarCambiosPendientesYSalir()">Guardar y salir</button>
+            <button class="btn-cancelar-borrar" onclick="rechazarCambiosPendientesYSalir()">Descartar y salir</button>
+            <button class="btn-cancelar-borrar" onclick="revisarCambiosPendientes()">Revisar</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

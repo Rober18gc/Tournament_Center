@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión Usuarios/Equipos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='administrador.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="inicio">
+    <h1 class="titulo-zona-juegos">Gestión Usuarios/Equipos</h1>
+    <div class="grid-juegos grid-juegos-2">
+
+        <div class="juego" onclick="window.location.href='/admin/usuarios'">
+            <img src="{{ url_for('static', filename='imagenes/usuario.jpg') }}" alt="Gestión Usuarios">
+            <div class="overlay">Gestión Usuarios</div>
+        </div>
+
+        <div class="juego" onclick="window.location.href='/admin/equipos'">
+            <img src="{{ url_for('static', filename='imagenes/grupo.jpg') }}" alt="Gestión Equipos">
+            <div class="overlay">Gestión Equipos</div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

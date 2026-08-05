@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Juego{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='administrador.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div id="avisoCreacion" class="aviso-admin oculto"></div>
+
+<div class="contenedor-form-juego">
+
+    <!-- IZQUIERDA: portada -->
+    <div class="form-juego-izquierda">
+        <p class="label-portada">Portada</p>
+        <label class="zona-subida-portada" for="inputPortada">
+            <img id="previstaPortada"
+                 src="{{ url_for('static', filename='imagenes/Logo.png') }}"
+                 alt="Vista previa portada"
+                 class="previa-portada-grande">
+            <span class="texto-subida">Haz clic para seleccionar imagen</span>
+        </label>
+        <input type="file" id="inputPortada" name="portada" accept="image/*"
+               class="input-portada-oculto" form="formCrearJuego"
+               onchange="previsualizarPortada(this)">
+    </div>
+
+    <!-- DERECHA: formulario -->
+    <div class="form-juego-derecha">
+
+        <h2 class="form-juego-titulo">Añadir juego</h2>
+
+        <form id="formCrearJuego">
+
+            <!-- NOMBRE -->
+            <div class="form-fila">
+                <div class="campo">
+                    <label>Nombre del juego</label>
+                    <input type="text" name="nombre_juego" placeholder="Ej: Tekken 8">
+                </div>
+            </div>
+
+            <!-- GÉNERO + TIPO ELEMENTO -->
+            <div class="form-fila">
+                <div class="campo">
+                    <label>Género</label>
+                    <select name="id_genero" id="selectGenero"
+                            onchange="toggleNuevoGenero(this.value)">
+                        <option value="">-- Selecciona --</option>
+                        {% for genero in generos %}
+                        <option value="{{ genero.id_genero }}">{{ genero.nombre_genero }}</option>
+                        {% endfor %}
+                        <option value="nuevo">+ Nuevo género...</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Tipo de elemento</label>
+                    <select name="tipo_elemento"
+                            onchange="cambiarSeccionElementos(this.value)">
+                        <option value="">-- Selecciona --</option>
+                        <option value="Personajes">Personajes</option>
+                        <option value="Equipos">Equipos</option>
+                        <option value="Armas">Armas</option>
+                        <option value="Personajes y Armas">Personajes y Armas</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- TIPO DE JUEGO -->
+            <div class="form-fila">
+                <div class="campo">
+                    <label>Tipo de juego</label>
+                    <select name="es_equipo">
+                        <option value="false">1 vs 1</option>
+                        <option value="true">Equipos</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- NUEVO GÉNERO (oculto por defecto) -->
+            <div id="contenedorNuevoGenero" class="form-fila oculto">
+                <div class="campo">
+                    <label>Nombre del nuevo género</label>
+                    <input type="text" name="nuevo_genero" id="inputNuevoGenero"
+                           placeholder="Ej: RPG">
+                </div>
+            </div>
+
+            <!-- SECCIÓN PERSONAJES -->
+            <div id="seccionPersonajes" class="seccion-elementos oculto">
+                <p class="label-seccion">Personajes</p>
+                <div class="fila-añadir">
+                    <input type="text" id="inputPersonaje" placeholder="Nombre del personaje">
+                    <button type="button" class="btn-añadir" onclick="añadirPersonaje()">Añadir</button>
+                </div>
+                <ul id="listaPersonajes" class="lista-elementos"></ul>
+                <input type="hidden" id="hiddenPersonajes" name="personajes" value="[]">
+            </div>
+
+            <!-- SECCIÓN EQUIPOS -->
+            <div id="seccionEquipos" class="seccion-elementos oculto">
+                <p class="label-seccion">Equipos</p>
+                <div class="fila-añadir">
+                    <input type="text" id="inputEquipo" placeholder="Nombre del equipo">
+                    <button type="button" class="btn-añadir" onclick="añadirEquipo()">Añadir</button>
+                </div>
+                <ul id="listaEquipos" class="lista-elementos"></ul>
+                <input type="hidden" id="hiddenEquipos" name="equipos" value="[]">
+            </div>
+
+            <!-- SECCIÓN ARMAS -->
+            <div id="seccionArmas" class="seccion-elementos oculto">
+                <p class="label-seccion">Armas</p>
+                <div class="fila-añadir">
+                    <input type="text" id="inputNombreArma" placeholder="Nombre del arma">
+                    <input type="text" id="inputTipoArma" placeholder="Tipo (ej: Fusil)">
+                    <button type="button" class="btn-añadir" onclick="añadirArma()">Añadir</button>
+                </div>
+                <ul id="listaArmas" class="lista-elementos"></ul>
+                <input type="hidden" id="hiddenArmas" name="armas" value="[]">
+            </div>
+
+            <!-- SECCIÓN HABILIDAD (solo para Personajes y Armas) -->
+            <div id="seccionHabilidades" class="seccion-elementos oculto">
+                <p class="label-seccion">Habilidades (personaje → arma)</p>
+                <div class="fila-añadir">
+                    <select id="selectPersonajeHabilidad" class="select-habilidad">
+                        <option value="">-- Personaje --</option>
+                    </select>
+                    <select id="selectArmaHabilidad" class="select-habilidad">
+                        <option value="">-- Arma --</option>
+                    </select>
+                    <input type="text" id="inputHabilidad" placeholder="Habilidad">
+                    <button type="button" class="btn-añadir" onclick="añadirHabilidad()">Añadir</button>
+                </div>
+                <ul id="listaHabilidades" class="lista-elementos"></ul>
+                <input type="hidden" id="hiddenHabilidades" name="habilidades" value="[]">
+            </div>
+
+            <!-- BOTONES -->
+            <div class="form-fila form-botones">
+                <button type="button" class="btn-guardar-juego" onclick="enviarFormularioJuego()">
+                    Crear juego
+                </button>
+                <button type="button" class="btn-cancelar-juego"
+                        onclick="window.location.href='/admin/juegos'">
+                    Cancelar
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

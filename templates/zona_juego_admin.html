@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Juegos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='administrador.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="inicio">
+    <h1 class="titulo-zona-juegos">Administración de Juegos</h1>
+    <div class="grid-juegos grid-juegos-2">
+        <div class="juego" onclick="window.location.href='/admin/juegos/crear'">
+            <img src="{{ url_for('static', filename='imagenes/aniadir.jpg') }}" alt="Añadir juego">
+            <div class="overlay">Añadir juego</div>
+        </div>
+
+        <div class="juego" onclick="window.location.href='/admin/juegos/gestionar'">
+            <img src="{{ url_for('static', filename='imagenes/mando.jpg') }}" alt="Gestionar juegos">
+            <div class="overlay">Gestionar juegos</div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

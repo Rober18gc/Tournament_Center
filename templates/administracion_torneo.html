@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Torneos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='administrador.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="panel-admin">
+
+    <h1 class="titulo-panel">Gestión de Torneos</h1>
+
+    <div class="controles-lista">
+        <input type="text"
+               class="buscador-usuarios"
+               placeholder="Buscar torneo o juego..."
+               oninput="filtrarGestionTorneos(this.value)">
+
+        <select class="selector-orden" onchange="ordenarGestionTorneos(this.value)">
+            <option value="">Ordenar por...</option>
+            <option value="alfabetico">Alfabético (A-Z)</option>
+            <option value="max-torneos">Más torneos primero</option>
+            <option value="min-torneos">Menos torneos primero</option>
+        </select>
+
+        <select class="selector-orden" onchange="filtrarGestionTorneosPorEstado(this.value)">
+            <option value="">Filtrar por estado...</option>
+            <option value="Activo">Activo</option>
+            <option value="Cerrado">Cerrado</option>
+            <option value="Finalizado">Finalizado</option>
+        </select>
+
+        <button class="btn-borrar-finalizados" onclick="abrirModalBorrarFinalizados()">
+            Borrar finalizados
+        </button>
+    </div>
+
+    <div class="lista-usuarios" id="listaGestionTorneos">
+
+        {% for juego in juegos %}
+        {% if juego.torneos %}
+        <div class="fila-usuario seccion-gestion-juego"
+             data-juego="{{ juego.nombre_juego | lower }}"
+             data-num-torneos="{{ juego.torneos | length }}">
+
+            <div class="cabecera-fila" onclick="toggleDesplegableGestionTorneo(this)">
+                <span class="nombre-fila">{{ juego.nombre_juego }}</span>
+                <span class="contador-torneos-badge">{{ juego.torneos | length }} torneo(s)</span>
+            </div>
+
+            <div class="panel-desplegable oculto">
+                {% for torneo in juego.torneos %}
+                <div class="fila-torneo-gestion"
+                     data-id="{{ torneo.id_torneo }}"
+                     data-nombre="{{ torneo.nombre | lower }}"
+                     data-juego="{{ juego.nombre_juego | lower }}"
+                     data-estado="{{ torneo.estado }}">
+
+                    <div class="cabecera-torneo-gestion" onclick="toggleDetalleTorneoGestion(this)">
+                        <div class="info-torneo-cabecera">
+                            <span class="nombre-torneo-admin">{{ torneo.nombre }}</span>
+                            <span class="estado-torneo-badge estado-{{ torneo.estado | lower }}">{{ torneo.estado }}</span>
+                        </div>
+                        <div class="botones-fila">
+                            <button class="btn-lapiz"
+                                    onclick="abrirInfoTorneoGestion(event, {{ torneo.id_torneo }})"
+                                    title="Editar torneo">✏️</button>
+                            <button class="btn-papelera"
+                                    onclick="abrirModalBorrarTorneo(event, {{ torneo.id_torneo }}, '{{ torneo.nombre }}')"
+                                    title="Borrar torneo">🗑️</button>
+                        </div>
+                    </div>
+
+                    <div class="detalle-torneo-gestion oculto" id="detalleTorneo-{{ torneo.id_torneo }}">
+
+                        <div class="dato-fila" data-campo="nombre"
+                             data-valor-original="{{ torneo.nombre }}">
+                            <span class="etiqueta-dato">Nombre</span>
+                            <span class="valor-dato">{{ torneo.nombre }}</span>
+                            <button class="btn-lapiz-dato"
+                                    onclick="editarDatoTorneoGestion(event, this)">✏️</button>
+                        </div>
+
+                        <div class="dato-fila" data-campo="descripcion"
+                             data-valor-original="{{ torneo.descripcion }}">
+                            <span class="etiqueta-dato">Descripción</span>
+                            <span class="valor-dato">{{ torneo.descripcion }}</span>
+                            <button class="btn-lapiz-dato"
+                                    onclick="editarDatoTorneoGestion(event, this)">✏️</button>
+                        </div>
+
+                        <div class="dato-fila" data-campo="estado"
+                             data-valor-original="{{ torneo.estado }}">
+                            <span class="etiqueta-dato">Estado</span>
+                            <span class="valor-dato">{{ torneo.estado }}</span>
+                            <button class="btn-lapiz-dato"
+                                    onclick="editarDatoTorneoGestion(event, this)">✏️</button>
+                        </div>
+
+                        <div class="dato-fila" data-campo="max_participantes"
+                             data-valor-original="{{ torneo.max_participantes }}">
+                            <span class="etiqueta-dato">Máx. participantes</span>
+                            <span class="valor-dato">{{ torneo.max_participantes }}</span>
+                            <button class="btn-lapiz-dato"
+                                    onclick="editarDatoTorneoGestion(event, this)">✏️</button>
+                        </div>
+
+                        <div class="dato-fila" data-campo="fecha_inicio"
+                             data-valor-original="{{ torneo.fecha_inicio }}">
+                            <span class="etiqueta-dato">Fecha inicio</span>
+                            <span class="valor-dato">{{ torneo.fecha_inicio }}</span>
+                            <button class="btn-lapiz-dato"
+                                    onclick="editarDatoTorneoGestion(event, this)">✏️</button>
+                        </div>
+
+                        <div class="dato-fila" data-campo="fecha_final"
+                             data-valor-original="{{ torneo.fecha_final }}">
+                            <span class="etiqueta-dato">Fecha fin</span>
+                            <span class="valor-dato">{{ torneo.fecha_final }}</span>
+                            <button class="btn-lapiz-dato"
+                                    onclick="editarDatoTorneoGestion(event, this)">✏️</button>
+                        </div>
+
+                        <div class="botones-desplegable">
+                            <button class="btn-aceptar-cambios"
+                                    id="btnAceptarTorneo-{{ torneo.id_torneo }}"
+                                    onclick="abrirModalConfirmarCambiosTorneo({{ torneo.id_torneo }})"
+                                    disabled>Aceptar</button>
+                            <button class="btn-restablecer-cambios"
+                                    onclick="restablecerCambiosTorneo({{ torneo.id_torneo }})">Restablecer</button>
+                        </div>
+
+                        {% if torneo.participantes %}
+                        <div class="grupo-elementos">
+                            <p class="label-grupo">Participantes</p>
+                            <ul class="lista-elementos-juego" id="listaParticipantes-{{ torneo.id_torneo }}">
+                                {% for pt in torneo.participantes %}
+                                {% set es_org_torneo = (pt.usuario_obj.id_usuario == torneo.id_usuario) %}
+                                {% set es_admin_global = (pt.usuario_obj.rol_obj.nombre_rol == 'Administrador') %}
+                                <li class="elemento-juego elemento-participante"
+                                    data-id-usuario="{{ pt.usuario_obj.id_usuario }}">
+                                    <span class="valor-elemento">
+                                        {{ pt.usuario_obj.nombre_usuario }}
+                                        <em class="rol-participante" id="rolLabel-{{ torneo.id_torneo }}-{{ pt.usuario_obj.id_usuario }}">
+                                            ({% if es_admin_global %}Administrador{% elif es_org_torneo %}Organizador{% else %}Participante{% endif %})
+                                        </em>
+                                    </span>
+                                    <div class="botones-elemento">
+                                        {% if not es_admin_global %}
+                                        <select class="select-rol-participante"
+                                                onchange="cambiarRolParticipanteGestion({{ torneo.id_torneo }}, {{ pt.usuario_obj.id_usuario }}, this)">
+                                            <option value="Participante" {% if not es_org_torneo %}selected{% endif %}>Participante</option>
+                                            <option value="Organizador" {% if es_org_torneo %}selected{% endif %}>Organizador</option>
+                                        </select>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+        {% endif %}
+        {% endfor %}
+
+    </div>
+
+    <div class="controles-paginacion oculto" id="paginacion-listaGestionTorneos">
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaGestionTorneos', '.seccion-gestion-juego', -1)">←</button>
+        <span class="pagina-actual-texto">1 / 1</span>
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaGestionTorneos', '.seccion-gestion-juego', 1)">→</button>
+    </div>
+
+</div>
+
+<!-- MODAL BORRAR TORNEO -->
+<div id="modalBorrarTorneoGestion" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>¿Borrar torneo?</h3>
+        <p>Vas a borrar <strong id="nombreTorneoBorrar"></strong>. Se eliminarán todas sus partidas y participantes. Esta acción es irreversible.</p>
+        <div class="modal-borrar-botones">
+            <button class="btn-confirmar-borrar-admin" onclick="confirmarBorrarTorneoGestion()">Sí, borrar</button>
+            <button class="btn-cancelar-borrar" onclick="cerrarModalBorrarTorneoGestion()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL BORRAR FINALIZADOS -->
+<div id="modalBorrarFinalizados" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>¿Borrar todos los torneos finalizados?</h3>
+        <p>Se eliminarán todos los torneos con estado <strong>Finalizado</strong> y sus datos asociados. Esta acción es irreversible.</p>
+        <div class="modal-borrar-botones">
+            <button class="btn-confirmar-borrar-admin" onclick="confirmarBorrarFinalizados()">Sí, borrar todos</button>
+            <button class="btn-cancelar-borrar" onclick="cerrarModalBorrarFinalizados()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR CAMBIOS -->
+<div id="modalConfirmarCambiosTorneoGestion" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>¿Guardar cambios?</h3>
+        <p>Vas a guardar los cambios en <strong id="nombreTorneoCambios"></strong>.</p>
+        <div class="modal-borrar-botones">
+            <button class="btn-confirmar-borrar-admin" onclick="confirmarGuardarCambiosTorneoGestion()">Confirmar</button>
+            <button class="btn-cancelar-borrar" onclick="cerrarModalConfirmarCambiosTorneoGestion()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ERROR -->
+<div id="modalErrorTorneoGestion" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>Error</h3>
+        <p id="textoModalErrorTorneoGestion"></p>
+        <div class="modal-borrar-botones">
+            <button class="btn-cancelar-borrar"
+                    onclick="document.getElementById('modalErrorTorneoGestion').classList.add('oculto')">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,391 @@
+.pagina-equipos {
+    padding: 30px 40px;
+    color: white;
+}
+
+.equipos-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.equipos-cabecera h1 {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+.btn-crear-equipo {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background-color: #ff6f61;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-crear-equipo:hover {
+    background-color: #e05a4d;
+    transform: scale(1.03);
+}
+
+.equipos-vacio {
+    text-align: center;
+    color: #888;
+    margin-top: 60px;
+    font-size: 1.1rem;
+}
+
+.oculto {
+    display: none !important;
+}
+
+.oculto-paginacion {
+    display: none !important;
+}
+
+.controles-paginacion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px 0 8px;
+}
+
+.controles-paginacion.oculto {
+    display: none !important;
+}
+
+.btn-paginacion {
+    background: #23272f;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 6px 18px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-paginacion:hover:not(:disabled) {
+    background: #ff6f61;
+    color: #fff;
+    border-color: #ff6f61;
+}
+
+.btn-paginacion:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.pagina-actual-texto {
+    color: #c9d1d9;
+    font-size: 0.97rem;
+    min-width: 60px;
+    text-align: center;
+}
+
+/* CONTROLES BÚSQUEDA Y ORDEN */
+.controles-lista {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    align-items: center;
+}
+
+.buscador-equipos {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.28);
+    color: #fff;
+    font-size: 1rem;
+    box-sizing: border-box;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.buscador-equipos:focus {
+    border-color: #ff6f61;
+}
+
+.buscador-equipos::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.selector-orden-equipos {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.28);
+    color: #fff;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    transition: border 0.2s;
+    flex-shrink: 0;
+}
+
+.selector-orden-equipos:focus {
+    border-color: #ff6f61;
+}
+
+.selector-orden-equipos option {
+    background: #1e1e1e;
+    color: #fff;
+}
+
+/* GRID DE CARDS */
+.grid-equipos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* CARD */
+.equipo-card {
+    background-color: rgba(43, 47, 54, 0.95);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: transform 0.2s;
+    align-self: start;
+}
+
+.equipo-card:hover {
+    transform: translateY(-3px);
+}
+
+/* CABECERA: nombre + miembros + botón unirse */
+.equipo-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.equipo-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.equipo-nombre {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #ff6f61;
+}
+
+.equipo-miembros {
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.miembros-actuales {
+    color: #6fcf8a;
+    font-weight: bold;
+}
+
+.miembros-max {
+    color: #ccc;
+}
+
+/* BOTÓN UNIRSE */
+.btn-unirse {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.btn-unirse:hover {
+    background-color: #45a049;
+    transform: scale(1.04);
+}
+
+.btn-unirse:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* BOTÓN SALIR */
+.btn-salir {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: #c0392b;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.btn-salir:hover {
+    background-color: #a93226;
+    transform: scale(1.04);
+}
+
+/* PIE: botón toggle */
+.equipo-card-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 10px;
+}
+
+.btn-toggle-miembros {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ccc;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.2s, color 0.2s;
+    width: 100%;
+}
+
+.btn-toggle-miembros:hover {
+    background-color: rgba(255, 111, 97, 0.15);
+    color: #ff6f61;
+    border-color: #ff6f61;
+}
+
+/* LISTA DE MIEMBROS */
+.lista-miembros {
+    overflow: hidden;
+}
+
+.lista-miembros.oculta {
+    display: none;
+}
+
+.lista-miembros ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #1e90ff #1a1d23;
+}
+
+.lista-miembros ul::-webkit-scrollbar {
+    width: 6px;
+    background: #1a1d23;
+}
+
+.lista-miembros ul::-webkit-scrollbar-track {
+    background: #1a1d23;
+}
+
+.lista-miembros ul::-webkit-scrollbar-thumb {
+    background: #1e90ff;
+    border-radius: 10px;
+}
+
+.lista-miembros ul::-webkit-scrollbar-thumb:hover {
+    background: #4aa3ff;
+}
+
+.miembro-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.05);
+    font-size: 0.88rem;
+}
+
+.miembro-item.capitan {
+    background-color: rgba(255, 111, 97, 0.12);
+}
+
+.miembro-icono {
+    color: #ff6f61;
+    font-size: 0.75rem;
+    width: 14px;
+    text-align: center;
+}
+
+.miembro-item:not(.capitan) .miembro-icono {
+    color: #888;
+}
+
+.miembro-nombre {
+    color: #ddd;
+}
+
+.miembro-item.capitan .miembro-nombre {
+    color: #ff6f61;
+    font-weight: bold;
+}
+
+.acciones-miembro-equipo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.btn-estrella-capitan {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 2px 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s, transform 0.15s;
+    line-height: 1;
+}
+
+.btn-estrella-capitan:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.btn-estrella-capitan.activa {
+    opacity: 1;
+}
+
+.btn-expulsar-equipo {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 4px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    line-height: 1;
+}
+
+.btn-expulsar-equipo:hover {
+    opacity: 1;
+}
+
+@media screen and (max-width: 768px) {
+    .controles-lista {
+        flex-direction: column;
+    }
+}

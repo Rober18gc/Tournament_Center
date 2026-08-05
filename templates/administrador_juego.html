@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Juegos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='administrador.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<script>
+window.generosDisponibles = [
+    {% for g in generos %}
+    { id: {{ g.id_genero }}, nombre: "{{ g.nombre_genero }}" }{{ "," if not loop.last }}
+    {% endfor %}
+];
+</script>
+
+<div class="panel-admin">
+
+    <h1 class="titulo-panel">Gestión de Juegos</h1>
+
+    <div class="controles-lista">
+        <input type="text"
+               class="buscador-usuarios"
+               placeholder="Buscar juego..."
+               oninput="filtrarJuegos(this.value)">
+
+        <select class="selector-orden" onchange="ordenarJuegos(this.value)">
+            <option value="">Ordenar por...</option>
+            <option value="alfabetico">Alfabético (A-Z)</option>
+            <option value="genero">Género</option>
+            <option value="tipo">Tipo de elemento</option>
+        </select>
+
+        <select class="selector-orden" onchange="filtrarJuegosPorTipo(this.value)">
+            <option value="">Filtrar por tipo...</option>
+            <option value="Personajes">Personajes</option>
+            <option value="Equipos">Equipos</option>
+            <option value="Armas">Armas</option>
+            <option value="Personajes y Armas">Personajes y Armas</option>
+        </select>
+    </div>
+
+    <div class="lista-usuarios" id="listaJuegos">
+
+        {% for juego in juegos %}
+        {% set torneos_activos = juego.torneos | rejectattr('estado', 'equalto', 'Finalizado') | list | length %}
+        <div class="fila-usuario"
+             data-id="{{ juego.id_juego }}"
+             data-nombre="{{ juego.nombre_juego | lower }}"
+             data-genero="{{ juego.genero_obj.nombre_genero | lower }}"
+             data-tipo-elemento="{{ juego.tipo_elemento or '' }}"
+             data-torneos-activos="{{ torneos_activos }}">
+
+            <div class="cabecera-fila" onclick="toggleDesplegableJuego(this)">
+                <span class="nombre-fila">{{ juego.nombre_juego }}</span>
+                <div class="botones-fila">
+                    <button class="btn-lapiz"
+                            onclick="abrirInfoJuego(event, {{ juego.id_juego }})"
+                            title="Editar información">✏️</button>
+                    <button class="btn-añadir-juego"
+                            onclick="toggleSeccionAnadir(event, {{ juego.id_juego }})"
+                            title="Añadir elemento">➕</button>
+                    <button class="btn-papelera"
+                            onclick="abrirModalBorrarJuego(event, {{ juego.id_juego }}, '{{ juego.nombre_juego }}')"
+                            title="Borrar juego">🗑️</button>
+                </div>
+            </div>
+
+            <div class="panel-desplegable oculto">
+
+                <!-- INFO DEL JUEGO -->
+                <div class="seccion-info-juego" id="infoJuego-{{ juego.id_juego }}">
+                    <p class="label-grupo">Información del juego</p>
+
+                    <div class="dato-fila" data-campo="nombre"
+                         data-valor-original="{{ juego.nombre_juego }}">
+                        <span class="etiqueta-dato">Nombre</span>
+                        <span class="valor-dato">{{ juego.nombre_juego }}</span>
+                        <button class="btn-lapiz-dato"
+                                onclick="editarDatoJuego(event, this)">✏️</button>
+                    </div>
+
+                    <div class="dato-fila" data-campo="genero"
+                         data-valor-original="{{ juego.genero_obj.nombre_genero }}"
+                         data-id-genero="{{ juego.id_genero }}">
+                        <span class="etiqueta-dato">Género</span>
+                        <span class="valor-dato">{{ juego.genero_obj.nombre_genero }}</span>
+                        <button class="btn-lapiz-dato"
+                                onclick="editarDatoJuego(event, this)">✏️</button>
+                    </div>
+
+                    <div class="dato-fila" data-campo="tipo"
+                         data-valor-original="{{ juego.tipo_elemento or '-' }}">
+                        <span class="etiqueta-dato">Tipo</span>
+                        <span class="valor-dato">{{ juego.tipo_elemento or '-' }}</span>
+                        <button class="btn-lapiz-dato"
+                                onclick="editarDatoJuego(event, this)">✏️</button>
+                    </div>
+
+                    <div class="dato-fila dato-solo-lectura">
+                        <span class="etiqueta-dato">Portada</span>
+                        <img class="previa-portada-mini"
+                             id="infoPortada-{{ juego.id_juego }}"
+                             src="{{ url_for('static', filename='imagenes/portadas/' + (juego.portada or 'Logo.png')) }}"
+                             alt="portada">
+                        <label class="btn-lapiz-dato btn-portada-label" title="Cambiar portada">
+                            ✏️
+                            <input type="file" accept="image/*" class="input-portada-oculto"
+                                   onchange="cambiarPortadaJuego({{ juego.id_juego }}, this)">
+                        </label>
+                    </div>
+
+                    <div class="botones-desplegable">
+                        <button class="btn-aceptar-cambios"
+                                onclick="abrirModalConfirmarCambiosJuego({{ juego.id_juego }})"
+                                disabled>Aceptar</button>
+                        <button class="btn-restablecer-cambios"
+                                onclick="restablecerCambiosJuego({{ juego.id_juego }})">Restablecer</button>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN AÑADIR (oculta por defecto) -->
+                <div class="seccion-anadir-elemento oculto" id="anadir-{{ juego.id_juego }}">
+                    {% set tipo = juego.tipo_elemento or '' %}
+
+                    {% if tipo == 'Personajes' or tipo == 'Personajes y Armas' %}
+                    <div class="subseccion-anadir">
+                        <p class="label-subseccion">Añadir personaje</p>
+                        <div class="fila-anadir-inline">
+                            <input type="text" class="input-anadir-elemento"
+                                   id="inputAnadirPersonaje-{{ juego.id_juego }}"
+                                   placeholder="Nombre del personaje">
+                            <button class="btn-anadir-inline"
+                                    onclick="anadirPersonajeJuego({{ juego.id_juego }})">Añadir</button>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if tipo == 'Equipos' %}
+                    <div class="subseccion-anadir">
+                        <p class="label-subseccion">Añadir equipo</p>
+                        <div class="fila-anadir-inline">
+                            <input type="text" class="input-anadir-elemento"
+                                   id="inputAnadirEquipo-{{ juego.id_juego }}"
+                                   placeholder="Nombre del equipo">
+                            <button class="btn-anadir-inline"
+                                    onclick="anadirEquipoJuego({{ juego.id_juego }})">Añadir</button>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if tipo == 'Armas' or tipo == 'Personajes y Armas' %}
+                    <div class="subseccion-anadir">
+                        <p class="label-subseccion">Añadir arma</p>
+                        <div class="fila-anadir-inline">
+                            <input type="text" class="input-anadir-elemento"
+                                   id="inputAnadirNombreArma-{{ juego.id_juego }}"
+                                   placeholder="Nombre del arma">
+                            <input type="text" class="input-anadir-elemento"
+                                   id="inputAnadirTipoArma-{{ juego.id_juego }}"
+                                   placeholder="Tipo de arma">
+                            <button class="btn-anadir-inline"
+                                    onclick="anadirArmaJuego({{ juego.id_juego }})">Añadir</button>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if tipo == 'Personajes y Armas' %}
+                    <div class="subseccion-anadir">
+                        <p class="label-subseccion">Añadir habilidad</p>
+                        <div class="fila-anadir-inline">
+                            <select class="input-anadir-elemento select-anadir"
+                                    id="selectAnadirPersonaje-{{ juego.id_juego }}">
+                                <option value="">-- Personaje --</option>
+                                {% for p in juego.personajes %}
+                                <option value="{{ p.id_personaje }}">{{ p.nombre_personaje }}</option>
+                                {% endfor %}
+                            </select>
+                            <select class="input-anadir-elemento select-anadir"
+                                    id="selectAnadirArma-{{ juego.id_juego }}">
+                                <option value="">-- Arma --</option>
+                                {% for a in juego.armas %}
+                                <option value="{{ a.id_armas }}">{{ a.nombre_arma }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="text" class="input-anadir-elemento"
+                                   id="inputAnadirHabilidad-{{ juego.id_juego }}"
+                                   placeholder="Habilidad">
+                            <button class="btn-anadir-inline"
+                                    onclick="anadirHabilidadJuego({{ juego.id_juego }})">Añadir</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- PERSONAJES -->
+                {% if juego.personajes %}
+                <div class="grupo-elementos">
+                    <p class="label-grupo">Personajes</p>
+                    <ul class="lista-elementos-juego" id="listaPersonajesJuego-{{ juego.id_juego }}">
+                        {% for p in juego.personajes %}
+                        <li class="elemento-juego" data-id="{{ p.id_personaje }}">
+                            <span class="valor-elemento">{{ p.nombre_personaje }}</span>
+                            <div class="botones-elemento">
+                                <button class="btn-lapiz-dato"
+                                        onclick="editarElementoJuego(event, 'personaje', {{ p.id_personaje }}, this)">✏️</button>
+                                <button class="btn-papelera"
+                                        onclick="borrarElementoJuego('personaje', {{ p.id_personaje }}, this)">🗑️</button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- EQUIPOS -->
+                {% if juego.clubes %}
+                <div class="grupo-elementos">
+                    <p class="label-grupo">Equipos</p>
+                    <ul class="lista-elementos-juego" id="listaEquiposJuego-{{ juego.id_juego }}">
+                        {% for c in juego.clubes %}
+                        <li class="elemento-juego" data-id="{{ c.id_club }}">
+                            <span class="valor-elemento">{{ c.nombre_club }}</span>
+                            <div class="botones-elemento">
+                                <button class="btn-lapiz-dato"
+                                        onclick="editarElementoJuego(event, 'club', {{ c.id_club }}, this)">✏️</button>
+                                <button class="btn-papelera"
+                                        onclick="borrarElementoJuego('club', {{ c.id_club }}, this)">🗑️</button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- ARMAS -->
+                {% if juego.armas %}
+                <div class="grupo-elementos">
+                    <p class="label-grupo">Armas</p>
+                    <ul class="lista-elementos-juego" id="listaArmasJuego-{{ juego.id_juego }}">
+                        {% for a in juego.armas %}
+                        <li class="elemento-juego" data-id="{{ a.id_armas }}">
+                            <span class="valor-elemento">{{ a.nombre_arma }} <em>({{ a.tipo_arma }})</em></span>
+                            <div class="botones-elemento">
+                                <button class="btn-lapiz-dato"
+                                        onclick="editarElementoJuego(event, 'arma', {{ a.id_armas }}, this)">✏️</button>
+                                <button class="btn-papelera"
+                                        onclick="borrarElementoJuego('arma', {{ a.id_armas }}, this)">🗑️</button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- HABILIDADES (Personaje_arma) -->
+                {% if juego.juego_personaje_arma %}
+                <div class="grupo-elementos">
+                    <p class="label-grupo">Habilidades</p>
+                    <ul class="lista-elementos-juego" id="listaHabilidadesJuego-{{ juego.id_juego }}">
+                        {% for h in juego.juego_personaje_arma %}
+                        <li class="elemento-juego"
+                            data-id-personaje="{{ h.id_personaje }}"
+                            data-id-arma="{{ h.id_armas }}">
+                            <span class="valor-elemento">
+                                {{ h.personaje_obj.nombre_personaje }} → {{ h.arma_obj.nombre_arma }}:
+                                <em>{{ h.habilidad }}</em>
+                            </span>
+                            <div class="botones-elemento">
+                                <button class="btn-lapiz-dato"
+                                        onclick="editarHabilidadJuego(event, {{ juego.id_juego }}, {{ h.id_personaje }}, {{ h.id_armas }}, this)">✏️</button>
+                                <button class="btn-papelera"
+                                        onclick="borrarHabilidadJuego({{ juego.id_juego }}, {{ h.id_personaje }}, {{ h.id_armas }}, this)">🗑️</button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="controles-paginacion oculto" id="paginacion-listaJuegos">
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaJuegos', '.fila-usuario', -1)">←</button>
+        <span class="pagina-actual-texto">1 / 1</span>
+        <button class="btn-paginacion" onclick="_cambiarPagina('listaJuegos', '.fila-usuario', 1)">→</button>
+    </div>
+
+</div>
+
+<!-- MODAL BORRAR JUEGO (sin torneos activos) -->
+<div id="modalBorrarJuego" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>¿Borrar juego?</h3>
+        <p>Vas a borrar <strong id="nombreJuegoBorrar"></strong>. Se eliminarán también todos sus elementos. Esta acción es irreversible.</p>
+        <div class="modal-borrar-botones">
+            <button class="btn-confirmar-borrar-admin" onclick="confirmarBorrarJuego()">Sí, borrar</button>
+            <button class="btn-cancelar-borrar" onclick="cerrarModalBorrarJuego()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL BORRAR JUEGO CON TORNEOS ACTIVOS -->
+<div id="modalBorrarJuegoConTorneos" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>¿Borrar juego con torneos activos?</h3>
+        <p><strong id="nombreJuegoBorrarTorneos"></strong> tiene <strong id="cantidadTorneosActivos"></strong> torneo(s) activo(s). Si borras el juego se eliminarán también esos torneos, sus participantes y partidas.</p>
+        <div class="modal-borrar-botones">
+            <button class="btn-confirmar-borrar-admin" onclick="confirmarBorrarJuegoConTorneos()">Borrar todo</button>
+            <button class="btn-cancelar-borrar" onclick="cerrarModalBorrarJuegoConTorneos()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR CAMBIOS -->
+<div id="modalConfirmarCambiosJuego" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>¿Guardar cambios?</h3>
+        <p>Vas a guardar los cambios en <strong id="nombreJuegoCambios"></strong>.</p>
+        <div class="modal-borrar-botones">
+            <button class="btn-confirmar-borrar-admin" onclick="confirmarGuardarCambiosJuego()">Confirmar</button>
+            <button class="btn-cancelar-borrar" onclick="cancelarModalConfirmarCambiosJuego()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ERROR -->
+<div id="modalErrorJuego" class="modal-borrar oculto">
+    <div class="modal-borrar-contenido">
+        <h3>Error</h3>
+        <p id="textoModalErrorJuego"></p>
+        <div class="modal-borrar-botones">
+            <button class="btn-cancelar-borrar" onclick="cerrarModalErrorJuego()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Administración de Torneos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='administrador.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="inicio">
+    <h1 class="titulo-zona-juegos">Administración de Torneos</h1>
+    <div class="grid-juegos">
+
+        <div class="juego" onclick="window.location.href='/seleccionar_juego'">
+            <img src="{{ url_for('static', filename='imagenes/aniadir.jpg') }}" alt="Crear torneo">
+            <div class="overlay">Crear torneo</div>
+        </div>
+
+        <div class="juego" onclick="window.location.href='/admin/torneos/ver'">
+            <img src="{{ url_for('static', filename='imagenes/eliminatoria.jpg') }}" alt="Ver torneos">
+            <div class="overlay">Ver torneos</div>
+        </div>
+
+        <div class="juego" onclick="window.location.href='/admin/torneos/gestionar'">
+            <img src="{{ url_for('static', filename='imagenes/trofeo.jpg') }}" alt="Gestionar torneos">
+            <div class="overlay">Gestionar torneos</div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

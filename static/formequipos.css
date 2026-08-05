@@ -1,0 +1,56 @@
+input[type="text"] {
+    background-color: #3a3f47;
+    color: white;
+}
+
+input[type="text"]::placeholder {
+    color: #aaa;
+}
+
+textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    background-color: #3a3f47;
+    color: white;
+}
+
+select {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-family: inherit;
+    background-color: #3a3f47;
+    color: white;
+    cursor: pointer;
+    outline: none;
+}
+
+select option {
+    background-color: #3a3f47;
+    color: white;
+}
+
+select:focus {
+    outline: 2px solid #4CAF50;
+}
+
+.zonaboton button:last-child {
+    background-color: #555;
+}
+
+.zonaboton button:last-child:hover {
+    background-color: #666;
+}
+
+.zonaboton button {
+    flex: 1;
+}

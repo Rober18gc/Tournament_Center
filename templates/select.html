@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Elige un juego para la creacion del torneo </h1>
+<div id="inicio" class="inicio">
+    <div class="buscador-container">
+        <input type="text" id="buscador" placeholder="Buscar juego..." onkeyup="buscarJuego()">
+    </div>
+
+    <div class="grid-juegos" id="gridJuegos">
+
+        {% for juego in juegos %}
+        <div class="juego"
+             data-genero="{{ juego.genero_obj.nombre_genero | lower }}"
+             data-nombre="{{ juego.nombre_juego | lower }}">
+            <a href="/crear_torneo?juego={{ juego.id_juego }}">
+                <img src="{{ url_for('static', filename='imagenes/portadas/' ~ (juego.portada or 'Logo.png')) }}">
+                <div class="overlay">{{ juego.nombre_juego }}</div>
+            </a>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}
