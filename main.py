@@ -4537,19 +4537,10 @@ def aplicar_migraciones():
             conexion.execute(text('ALTER TABLE torneo ADD COLUMN max_miembros_equipo INTEGER DEFAULT NULL'))
         conexion.commit()
 
+# Inicialización de la BD (se ejecuta siempre, con Gunicorn y con el servidor de desarrollo)
+db.base.metadata.create_all(bind=db.engine)
+aplicar_migraciones()
+seed_all()
+
 if __name__ == "__main__":
-
-    db.base.metadata.create_all(bind=db.engine)
-    aplicar_migraciones()
-
-    seed_all()
-#    seed_roles()
-#    seed_generos()
-#    seed_juegos()
-#    seed_personajes()
-#    seed_clubs()
-#    seed_armas()
-#    seed_admin()
-#    seed_personaje_armas()
-
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=os.environ.get("FLASK_DEBUG", "0") == "1")
