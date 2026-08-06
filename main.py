@@ -4542,6 +4542,7 @@ def aplicar_migraciones():
         if 'max_miembros_equipo' not in columnas_torneo:
             conexion.execute(text('ALTER TABLE torneo ADD COLUMN max_miembros_equipo INTEGER DEFAULT NULL'))
         conexion.execute(text('ALTER TABLE partida ALTER COLUMN tipo_partida TYPE VARCHAR(50)'))
+        conexion.execute(text('ALTER TABLE partida ALTER COLUMN estado TYPE VARCHAR(30)'))
         conexion.commit()
 
 # Inicialización de la BD (se ejecuta siempre, con Gunicorn y con el servidor de desarrollo)
