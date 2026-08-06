@@ -30,10 +30,15 @@
 </div>
 
 <div class="crear-torneo-barra">
-    <button class="btn-crear-torneo-unico"
-        onclick="if(!window.usuarioLogueado){ abrirModalLoginCrearTorneo(); } else { window.location.href='/crear_torneo?juego={{ juego.id_juego }}'; }">
-        Crear torneo
-    </button>
+    <div class="card">
+        <h2 style="text-align:center;">Crear Torneos</h2>
+        <div class="btn-torneos">
+            <button class="btn-crear-torneo-unico"
+                onclick="if(!window.usuarioLogueado){ abrirModalLoginCrearTorneo(); } else { window.location.href='/crear_torneo?juego={{ juego.id_juego }}'; }">
+                Crear torneo
+            </button>
+        </div>
+    </div>
 </div>
 
 <div class="pagina-juego">
