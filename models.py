@@ -304,7 +304,7 @@ class Partida(db.base):
 
     id_partida: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     id_torneo: Mapped[int] = mapped_column(Integer, ForeignKey("torneo.id_torneo"), nullable=False)
-    tipo_partida: Mapped[str] = mapped_column(String(20), nullable=False)
+    tipo_partida: Mapped[str] = mapped_column(String(50), nullable=False)
     estado: Mapped[str] = mapped_column(String(20), nullable=False)
     ganador_id: Mapped[int] = mapped_column(Integer,ForeignKey("participante_torneo.id_participante"),nullable=True)
     ganador: Mapped["Participante_torneo"] = relationship("Participante_torneo",back_populates="partidas_ganadas",foreign_keys=[ganador_id])
