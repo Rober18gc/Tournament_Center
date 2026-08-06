@@ -1804,7 +1804,7 @@ function abrirModalRevision(idPartida) {
                     ${
                         jugador.captura
                         ?
-                        `<a href="/${jugador.captura}" target="_blank">
+                        `<a href="/static/${jugador.captura}" target="_blank">
                             Ver captura
                         </a>`
                         :

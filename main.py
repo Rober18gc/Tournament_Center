@@ -1603,15 +1603,13 @@ def guardar_resultado(id_partida):
 #Si se ha enviado una captura la guardamos en disco y registramos la ruta
         if captura and captura.filename != "":
 
-            carpeta = "static/capturas"
+            carpeta = os.path.join(app.root_path, "static", "capturas")
             os.makedirs(carpeta, exist_ok=True)
 
-            nombre = f"{id_partida}_{usuario.id_usuario}_{captura.filename}"
-            ruta_guardado = os.path.join(carpeta, nombre)
+            nombre = f"{id_partida}_{usuario.id_usuario}_{secure_filename(captura.filename)}"
+            captura.save(os.path.join(carpeta, nombre))
 
-            captura.save(ruta_guardado)
-
-            participante_actual.captura_resultado = ruta_guardado
+            participante_actual.captura_resultado = f"capturas/{nombre}"
 
 #Obtenemos los dos participantes de la partida en orden fijo
         participantes = db_session.query(Participante_partida).filter(
