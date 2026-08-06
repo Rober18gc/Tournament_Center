@@ -44,7 +44,7 @@
             <button class="submenu-btn" onclick="irACrearEquipo()">Crear equipo</button>
         </ul>
 
-        <li class="menu-titulo" onclick="crearTorneo()">Crear torneo</li>
+        <li class="menu-titulo" onclick="crearTorneo()">Crear torneo {% if not nombre_usuario %} 🔒 {% endif %}</li>
 
         <li class="menu-titulo" onclick="verClasificacion()">Clasificación global</li>
 
