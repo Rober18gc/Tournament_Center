@@ -1148,7 +1148,7 @@ window.mostrarLogin = function () {
 // ===============================
 document.addEventListener("DOMContentLoaded", () => {
 
-    const contenedor = document.getElementById("listaTorneos");
+    const contenedor = document.getElementById("listaTorneosActivos");
 
     if(!contenedor) return;
 
