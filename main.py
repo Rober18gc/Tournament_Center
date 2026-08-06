@@ -2834,7 +2834,15 @@ def _ejecutar_borrado_usuario(usuario):
 
     db_session.flush()
 
-#Eliminar Participante_torneo manteniendo Participante_partida como referencia
+#Borrar Participante_partida del usuario antes de borrar Participante_torneo (FK en PostgreSQL)
+    for participacion in participaciones:
+        db_session.query(Participante_partida).filter_by(
+            id_participante_torneo=participacion.id_participante
+        ).delete(synchronize_session='fetch')
+
+    db_session.flush()
+
+#Eliminar Participante_torneo
     db_session.query(Participante_torneo).filter_by(
         id_usuario=usuario.id_usuario
     ).delete(synchronize_session='fetch')
