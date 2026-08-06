@@ -14,38 +14,32 @@
     window.usuarioLogueado = {{ 'true' if usuario_logueado else 'false' }};
 </script>
 
-<div class="pagina-juego">
-
-    <div id="modalLoginTorneo" class="modal-login oculto">
-        <div class="modal-login-contenido">
-            <h3>Acceso restringido</h3>
-            <p>Debes iniciar sesión o registrarte para participar en un torneo.</p>
-            <div class="modal-login-botones">
-                <button onclick="window.location.href='/formusuario'" class="btn-register-modal">
-                    Registrarse
-                </button>
-                <button onclick="cerrarModalLogin()" class="btn-cerrar-modal">
-                    Cerrar
-                </button>
-            </div>
+<div id="modalLoginTorneo" class="modal-login oculto">
+    <div class="modal-login-contenido">
+        <h3>Acceso restringido</h3>
+        <p>Debes iniciar sesión o registrarte para participar en un torneo.</p>
+        <div class="modal-login-botones">
+            <button onclick="window.location.href='/formusuario'" class="btn-register-modal">
+                Registrarse
+            </button>
+            <button onclick="cerrarModalLogin()" class="btn-cerrar-modal">
+                Cerrar
+            </button>
         </div>
     </div>
+</div>
+
+<div class="crear-torneo-barra">
+    <button class="btn-crear-torneo-unico"
+        onclick="if(!window.usuarioLogueado){ abrirModalLoginCrearTorneo(); } else { window.location.href='/crear_torneo?juego={{ juego.id_juego }}'; }">
+        Crear torneo
+    </button>
+</div>
+
+<div class="pagina-juego">
 
     <!-- IZQUIERDA -->
     <div class="columna izquierda">
-
-        <div class="card">
-            <h2 style="text-align:center;">Crear Torneos</h2>
-
-            <div class="btn-torneos">
-
-                <button class="btn-crear-torneo-unico"
-                    onclick="if(!window.usuarioLogueado){ abrirModalLoginCrearTorneo(); } else { window.location.href='/crear_torneo?juego={{ juego.id_juego }}'; }">
-                    Crear torneo
-                </button>
-
-            </div>
-        </div>
 
         <div class="card">
             <h2 style="text-align:center;">Torneos activos</h2>
