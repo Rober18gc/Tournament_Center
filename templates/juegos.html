@@ -35,7 +35,7 @@
         <div class="btn-torneos">
             <button class="btn-crear-torneo-unico"
                 onclick="if(!window.usuarioLogueado){ abrirModalLoginCrearTorneo(); } else { window.location.href='/crear_torneo?juego={{ juego.id_juego }}'; }">
-                Crear torneo
+                Crear torneo {% if not nombre_usuario %} 🔒 {% endif %}
             </button>
         </div>
     </div>
