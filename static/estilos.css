@@ -902,6 +902,8 @@ h1 {
 
 /* SCROLL JUEGO */
 #listaTorneos,
+#listaTorneosActivos,
+#listaTorneosFinalizados,
 #jugadoresActivos,
 #rankingJuego {
     max-height: 400px;
@@ -915,6 +917,11 @@ h1 {
     scrollbar-color: #1e90ff #000;
 }
 
+#listaTorneosActivos,
+#listaTorneosFinalizados {
+    max-height: 200px;
+}
+
 #jugadoresActivos {
     max-height: 200px;
 }
@@ -924,6 +931,8 @@ h1 {
 }
 
 #listaTorneos::-webkit-scrollbar,
+#listaTorneosActivos::-webkit-scrollbar,
+#listaTorneosFinalizados::-webkit-scrollbar,
 #jugadoresActivos::-webkit-scrollbar,
 #rankingJuego::-webkit-scrollbar {
     width: 8px;
@@ -931,12 +940,16 @@ h1 {
 }
 
 #listaTorneos::-webkit-scrollbar-track,
+#listaTorneosActivos::-webkit-scrollbar-track,
+#listaTorneosFinalizados::-webkit-scrollbar-track,
 #jugadoresActivos::-webkit-scrollbar-track,
 #rankingJuego::-webkit-scrollbar-track {
     background: #000;
 }
 
 #listaTorneos::-webkit-scrollbar-thumb,
+#listaTorneosActivos::-webkit-scrollbar-thumb,
+#listaTorneosFinalizados::-webkit-scrollbar-thumb,
 #jugadoresActivos::-webkit-scrollbar-thumb,
 #rankingJuego::-webkit-scrollbar-thumb {
     background: #1e90ff;
@@ -945,6 +958,8 @@ h1 {
 }
 
 #listaTorneos::-webkit-scrollbar-thumb:hover,
+#listaTorneosActivos::-webkit-scrollbar-thumb:hover,
+#listaTorneosFinalizados::-webkit-scrollbar-thumb:hover,
 #jugadoresActivos::-webkit-scrollbar-thumb:hover,
 #rankingJuego::-webkit-scrollbar-thumb:hover {
     background: #4aa3ff;
