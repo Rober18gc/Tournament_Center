@@ -2834,15 +2834,15 @@ def _ejecutar_borrado_usuario(usuario):
 
     db_session.flush()
 
-#Borrar Participante_partida del usuario antes de borrar Participante_torneo (FK en PostgreSQL)
+#Poner a NULL id_participante_torneo para conservar el historial de partidas mostrando "Eliminado"
     for participacion in participaciones:
         db_session.query(Participante_partida).filter_by(
             id_participante_torneo=participacion.id_participante
-        ).delete(synchronize_session='fetch')
+        ).update({"id_participante_torneo": None}, synchronize_session='fetch')
 
     db_session.flush()
 
-#Eliminar Participante_torneo
+#Eliminar Participante_torneo (ya no hay FK que lo bloquee)
     db_session.query(Participante_torneo).filter_by(
         id_usuario=usuario.id_usuario
     ).delete(synchronize_session='fetch')
@@ -4551,6 +4551,9 @@ def aplicar_migraciones():
             conexion.execute(text('ALTER TABLE torneo ADD COLUMN max_miembros_equipo INTEGER DEFAULT NULL'))
         conexion.execute(text('ALTER TABLE partida ALTER COLUMN tipo_partida TYPE VARCHAR(50)'))
         conexion.execute(text('ALTER TABLE partida ALTER COLUMN estado TYPE VARCHAR(30)'))
+        conexion.execute(text(
+            'ALTER TABLE participante_partida ALTER COLUMN id_participante_torneo DROP NOT NULL'
+        ))
         conexion.commit()
 
 # Inicialización de la BD (se ejecuta siempre, con Gunicorn y con el servidor de desarrollo)

@@ -333,7 +333,7 @@ class Participante_partida(db.base):
 
     id_participante_partida: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     id_partida: Mapped[int] = mapped_column(Integer, ForeignKey("partida.id_partida"), nullable=False)
-    id_participante_torneo: Mapped[int] = mapped_column(Integer, ForeignKey("participante_torneo.id_participante"), nullable=False)
+    id_participante_torneo: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("participante_torneo.id_participante"), nullable=True)
     posicion: Mapped[int] = mapped_column(Integer, nullable=False)
     puntos: Mapped[int] = mapped_column(Integer, nullable=False)
     eliminacion: Mapped[bool] = mapped_column(Boolean, nullable=False)
