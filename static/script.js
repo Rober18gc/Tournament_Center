@@ -1000,7 +1000,9 @@ window.cargarTorneos = function () {
             }
 
             data.forEach(torneo => {
-                const img = torneo.portada || "Logo.png";
+                const imgSrc = torneo.portada && torneo.portada.startsWith("http")
+                    ? torneo.portada
+                    : `/static/imagenes/portadas/${torneo.portada || "Logo.png"}`;
 
             const torneoCerrado = torneo.estado === "Cerrado";
             const torneoLleno = torneo.participantes_totales >= torneo.max_participantes;
@@ -1013,7 +1015,7 @@ window.cargarTorneos = function () {
                         onclick="window.location.href='/torneo/${torneo.id_torneo}'"
                         style="cursor:pointer;">
 
-                        <img src="/static/imagenes/portadas/${img}">
+                        <img src="${imgSrc}">
 
                         <div class="torneo-info-boton">
 
@@ -1804,7 +1806,7 @@ function abrirModalRevision(idPartida) {
                     ${
                         jugador.captura
                         ?
-                        `<a href="/static/${jugador.captura}" target="_blank">
+                        `<a href="${jugador.captura}" target="_blank">
                             Ver captura
                         </a>`
                         :
@@ -3940,7 +3942,9 @@ function cambiarPortadaJuego(idJuego, input) {
         .then(datos => {
             if (datos.error) { mostrarModalErrorJuego(datos.error); return; }
             const img = document.getElementById(`infoPortada-${idJuego}`);
-            if (img) img.src = `/static/imagenes/portadas/${datos.portada}?t=${Date.now()}`;
+            if (img) img.src = datos.portada.startsWith("http")
+                ? `${datos.portada}?t=${Date.now()}`
+                : `/static/imagenes/portadas/${datos.portada}?t=${Date.now()}`;
         });
 }
 

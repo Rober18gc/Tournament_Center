@@ -44,7 +44,7 @@
                  data-genero="{{ juego.genero_obj.nombre_genero | lower }}"
                  data-nombre="{{ juego.nombre_juego | lower }}">
                 <a href="{{ url_for('plantilla_juego', id_juego=juego.id_juego) }}">
-                    <img src="{{ url_for('static', filename='imagenes/portadas/' ~ (juego.portada or 'Logo.png')) }}">
+                    <img src="{{ portada_url(juego.portada) }}">
                     <div class="overlay">{{ juego.nombre_juego }}</div>
                 </a>
             </div>

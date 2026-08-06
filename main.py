@@ -10,9 +10,29 @@ from seed_data import *
 from datetime import datetime, date as date_type
 from sqlalchemy import inspect, text
 import json as json_mod
+import cloudinary
+import cloudinary.uploader
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "clave-local-desarrollo")
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+    secure=True
+)
+
+def _subir_a_cloudinary(archivo, carpeta="general"):
+    resultado = cloudinary.uploader.upload(archivo, folder=carpeta)
+    return resultado["secure_url"]
+
+@app.template_global()
+def portada_url(portada):
+    if portada and portada.startswith("http"):
+        return portada
+    from flask import url_for
+    return url_for("static", filename=f"imagenes/portadas/{portada or 'Logo.png'}")
 
 db_session = db.db_session
 
@@ -1600,16 +1620,9 @@ def guardar_resultado(id_partida):
         participante_actual.resultado_rival = resultado_rival
         participante_actual.confirmar_resultados = False
 
-#Si se ha enviado una captura la guardamos en disco y registramos la ruta
+#Si se ha enviado una captura la subimos a Cloudinary y guardamos la URL
         if captura and captura.filename != "":
-
-            carpeta = os.path.join(app.root_path, "static", "capturas")
-            os.makedirs(carpeta, exist_ok=True)
-
-            nombre = f"{id_partida}_{usuario.id_usuario}_{secure_filename(captura.filename)}"
-            captura.save(os.path.join(carpeta, nombre))
-
-            participante_actual.captura_resultado = f"capturas/{nombre}"
+            participante_actual.captura_resultado = _subir_a_cloudinary(captura, carpeta="capturas")
 
 #Obtenemos los dos participantes de la partida en orden fijo
         participantes = db_session.query(Participante_partida).filter(
@@ -3425,11 +3438,7 @@ def admin_crear_juego_post():
 #Guardamos la portada si se ha subido, o usamos la imagen por defecto
     nombre_portada = "Logo.png"
     if archivo_portada and archivo_portada.filename:
-        nombre_seguro = secure_filename(archivo_portada.filename)
-        ruta_portadas = os.path.join(app.root_path, "static", "imagenes", "portadas")
-        os.makedirs(ruta_portadas, exist_ok=True)
-        archivo_portada.save(os.path.join(ruta_portadas, nombre_seguro))
-        nombre_portada = nombre_seguro
+        nombre_portada = _subir_a_cloudinary(archivo_portada, carpeta="portadas")
 
     es_equipo = request.form.get("es_equipo", "false") == "true"
 
@@ -3717,16 +3726,12 @@ def admin_editar_portada_juego(id_juego):
     if not archivo.filename:
         return jsonify({"error": "Archivo vacío"}), 400
 
-#Guardamos la imagen en la carpeta de portadas
-    nombre_archivo = secure_filename(archivo.filename)
-    ruta_portadas = os.path.join(app.root_path, "static", "imagenes", "portadas")
-    os.makedirs(ruta_portadas, exist_ok=True)
-    archivo.save(os.path.join(ruta_portadas, nombre_archivo))
-    juego.portada = nombre_archivo
+#Subimos la portada a Cloudinary y guardamos la URL
+    juego.portada = _subir_a_cloudinary(archivo, carpeta="portadas")
 
     db_session.commit()
 
-    return jsonify({"ok": True, "portada": nombre_archivo})
+    return jsonify({"ok": True, "portada": juego.portada})
 
 @app.route("/admin/juegos/<int:id_juego>/info", methods=["PATCH"])
 def admin_editar_info_juego(id_juego):

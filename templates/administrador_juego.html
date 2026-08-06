@@ -103,7 +103,7 @@ window.generosDisponibles = [
                         <span class="etiqueta-dato">Portada</span>
                         <img class="previa-portada-mini"
                              id="infoPortada-{{ juego.id_juego }}"
-                             src="{{ url_for('static', filename='imagenes/portadas/' + (juego.portada or 'Logo.png')) }}"
+                             src="{{ portada_url(juego.portada) }}"
                              alt="portada">
                         <label class="btn-lapiz-dato btn-portada-label" title="Cambiar portada">
                             ✏️
