@@ -656,14 +656,16 @@ h1 {
 
 /* PAGINA JUEGO GRID */
 .crear-torneo-barra {
-    display: flex;
-    justify-content: center;
     padding: 16px 20px 0;
+}
+
+.crear-torneo-barra .card {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .crear-torneo-barra .btn-crear-torneo-unico {
     width: 100%;
-    max-width: 960px;
 }
 
 .pagina-juego {
