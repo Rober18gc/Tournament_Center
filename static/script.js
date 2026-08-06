@@ -983,7 +983,7 @@ function confirmarBorrarCuenta() {
 
 window.cargarTorneos = function () {
 
-    const contenedor = document.getElementById("listaTorneos");
+    const contenedor = document.getElementById("listaTorneosActivos");
     if (!contenedor) return;
 
     const id_juego = contenedor.dataset.juego;
@@ -992,14 +992,31 @@ window.cargarTorneos = function () {
         .then(res => res.json())
         .then(data => {
 
-            contenedor.innerHTML = "";
+            const contenedorActivos = document.getElementById("listaTorneosActivos");
+            const contenedorFinalizados = document.getElementById("listaTorneosFinalizados");
+
+            if (contenedorActivos) contenedorActivos.innerHTML = "";
+            if (contenedorFinalizados) contenedorFinalizados.innerHTML = "";
 
             if (!data || data.length === 0) {
-                contenedor.innerHTML = "<p>No hay torneos disponibles</p>";
+                if (contenedorActivos) contenedorActivos.innerHTML = "<p>No hay torneos disponibles</p>";
                 return;
             }
 
-            data.forEach(torneo => {
+            const activos = data.filter(t => t.estado !== "Finalizado");
+            const finalizados = data.filter(t => t.estado === "Finalizado");
+
+            if (activos.length === 0 && contenedorActivos) {
+                contenedorActivos.innerHTML = "<p>No hay torneos activos</p>";
+            }
+            if (finalizados.length === 0 && contenedorFinalizados) {
+                contenedorFinalizados.innerHTML = "<p>No hay torneos finalizados</p>";
+            }
+
+            [...activos, ...finalizados].forEach(torneo => {
+                const destino = torneo.estado === "Finalizado" ? contenedorFinalizados : contenedorActivos;
+                if (!destino) return;
+
                 const imgSrc = torneo.portada && torneo.portada.startsWith("http")
                     ? torneo.portada
                     : `/static/imagenes/portadas/${torneo.portada || "Logo.png"}`;
@@ -1010,7 +1027,7 @@ window.cargarTorneos = function () {
 //solo organizador puede ver el botón
                 const esOrganizador = torneo.es_creador;
 
-                contenedor.innerHTML += `
+                destino.innerHTML += `
                     <div class="torneo-card ${torneo.estado === 'Finalizado' ? 'torneo-finalizado' : ''}"
                         onclick="window.location.href='/torneo/${torneo.id_torneo}'"
                         style="cursor:pointer;">
