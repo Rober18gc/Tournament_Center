@@ -2840,6 +2840,11 @@ def _ejecutar_borrado_usuario(usuario):
             id_participante_torneo=participacion.id_participante
         ).update({"id_participante_torneo": None}, synchronize_session='fetch')
 
+#Poner a NULL ganador_id en partidas donde este participante era el ganador
+        db_session.query(Partida).filter_by(
+            ganador_id=participacion.id_participante
+        ).update({"ganador_id": None}, synchronize_session='fetch')
+
     db_session.flush()
 
 #Eliminar Participante_torneo (ya no hay FK que lo bloquee)
