@@ -867,7 +867,7 @@ h1 {
 
 .btn-crear-torneo-unico:hover {
     background: #45a049;
-    transform: scale(1.02);
+    transform: scale(1.005);
 }
 
 @media screen and (max-width: 900px) {

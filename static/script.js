@@ -999,7 +999,8 @@ window.cargarTorneos = function () {
             if (contenedorFinalizados) contenedorFinalizados.innerHTML = "";
 
             if (!data || data.length === 0) {
-                if (contenedorActivos) contenedorActivos.innerHTML = "<p>No hay torneos disponibles</p>";
+                if (contenedorActivos) contenedorActivos.innerHTML = "<p>No hay torneos activos</p>";
+                if (contenedorFinalizados) contenedorFinalizados.innerHTML = "<p>No hay torneos finalizados</p>";
                 return;
             }
 
