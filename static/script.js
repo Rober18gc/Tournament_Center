@@ -2775,6 +2775,10 @@ function confirmarBorrarFinalizados() {
                 return;
             }
             document.querySelectorAll(".fila-torneo-gestion[data-estado='Finalizado']").forEach(f => f.remove());
+        })
+        .catch(err => {
+            document.getElementById("textoModalErrorTorneoGestion").textContent = "Error inesperado al borrar: " + err;
+            document.getElementById("modalErrorTorneoGestion").classList.remove("oculto");
         });
 }
 

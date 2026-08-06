@@ -3257,22 +3257,28 @@ def admin_borrar_torneo(id_torneo):
 def admin_borrar_torneos_finalizados():
     if not _verificar_admin():
         return jsonify({"error": "No autorizado"}), 403
+    try:
 #Borramos todos los torneos finalizados y recalculamos roles de los afectados
-    torneos = db_session.query(Torneo).filter_by(estado="Finalizado").all()
-    ids_usuarios = set()
+        torneos = db_session.query(Torneo).filter_by(estado="Finalizado").all()
+        ids_usuarios = set()
 
-    for torneo in torneos:
-        ids_usuarios.update([pt.id_usuario for pt in torneo.participantes])
-        ids_usuarios.add(torneo.id_usuario)
-        _cascade_borrar_torneo(torneo)
+        for torneo in torneos:
+            ids_usuarios.update([pt.id_usuario for pt in torneo.participantes])
+            ids_usuarios.add(torneo.id_usuario)
+            _cascade_borrar_torneo(torneo)
 
-    db_session.commit()
+        db_session.commit()
 
-    for id_u in ids_usuarios:
-        recalcular_rol_organizador(id_u)
+        for id_u in ids_usuarios:
+            recalcular_rol_organizador(id_u)
 
-    db_session.commit()
-    return jsonify({"ok": True, "borrados": len(torneos)})
+        db_session.commit()
+        return jsonify({"ok": True, "borrados": len(torneos)})
+
+    except Exception as e:
+        db_session.rollback()
+        print("Error al borrar torneos finalizados:", str(e))
+        return jsonify({"error": f"Error al borrar: {str(e)}"}), 500
 
 @app.route("/admin/torneo/<int:id_torneo>/participante/<int:id_usuario>/rol", methods=["PATCH"])
 def admin_cambiar_rol_participante(id_torneo, id_usuario):
