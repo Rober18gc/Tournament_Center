@@ -3465,7 +3465,17 @@ function editarDatoJuego(evento, boton) {
             const inputNuevo = filaDato.querySelector(".input-nuevo-genero");
             if (select.value === "nuevo") {
                 const nombreNuevo = inputNuevo ? inputNuevo.value.trim() : "";
-                if (!nombreNuevo) { mostrarModalErrorJuego("Escribe el nombre del nuevo género"); return; }
+                if (!nombreNuevo) {
+                    const valorOriginal = filaDato.dataset.valorOriginal || "";
+                    filaDato.querySelectorAll(".input-edicion, .input-nuevo-genero").forEach(el => el.remove());
+                    spanValor.textContent = valorOriginal;
+                    spanValor.style.display = "";
+                    boton.textContent = "✏️";
+                    boton.dataset.editando = "false";
+                    delete (cambiosJuego[idJuego] || {})[campo];
+                    actualizarBotonAceptarJuego(idJuego);
+                    return;
+                }
                 nuevoValor = nombreNuevo;
                 cuerpoExtra = { _tipo: "nuevo_genero", valor: nombreNuevo };
             } else if (select.value) {

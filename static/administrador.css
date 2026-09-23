@@ -206,6 +206,20 @@
     flex: 1;
 }
 
+input.valor-dato,
+select.valor-dato {
+    background: #2a2a2a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: #fff;
+    padding: 4px 8px;
+    outline: none;
+}
+
+input.valor-dato::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
 .separador-solo-lectura {
     height: 1px;
     background: rgba(255, 255, 255, 0.1);
